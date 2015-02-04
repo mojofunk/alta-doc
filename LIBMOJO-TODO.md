@@ -1,49 +1,90 @@
 # libmojo
 
-switch to std:: smart pointer types
-All methods are async unless a "sync" suffix is appended to the function/method name
-switch to std::bind
+## Build System
 
+Be able to build static binary with all modules built in
+
+## C++11
+
+switch to std:: smart pointer types
+switch to std::bind where possible/necessary
+use std::function
+use std::atomic
+use std::regex
+use std:: random number generators
+
+All methods are async unless a "sync" suffix is appended to the function/method name
 move Object and Typesystem into core?
 Replace pointer typedefs with c++11 using keyword
 Implement custom any type for TypeSystem?
+
+Move fs to core or interface?
+use mojo::any alias for any boost classes so reimplementation etc is easier
+
+Add Context Interface to core
+
+Context needs call_sync and call_async methods, call async for normal
+events call_sync for disposing references in other thread contexts.
+
+mojo could offer a way to register a Context with a thread so that when
+registering
+
+## Project class
+
+Should only be one method to add and remove tracks?
 
 ## New Signals System
 
 Move away from the centralised event/signal system the is in place for
 ApplicationEventHandler interface.
 
+There are many ways to implement event propagation/signals. The two more common techniques are using a Listener interface or Anonymous signalling system. Both use function or class member pointers to communicate data to other areas of code. 
+
+A Listener interface has some level of class coupling via the Listener interface. An anonymous signal system has no coupling between classes.
+
+When a class is listening/connected to a signals of another class there are various class lifetime management issues to be taken into consideration. When methods of each class are executed in more than a single thread context it complicates things further.
+
+A signalling system that is used in a context with multiple threads has to guarantee thread safety.
+
+When a signal is emitted the functor that is dispatched will always know in which context the callback should be executed in. In the case of a Gtk+ based UI the callback should be executed in the default Gtk+ context. A class could connect the same signal handler to several signals. These signals could be emitted in several different threads, which means the class needs an internal event processing mechanism to process the events in the right thread/context.
+
+There are two options: A pointer to a class instance could be passed to the signal connection interface so that when a signal is emitted it can be emitted in the context that has been registered. This has the advantage in that 
+
+The signal could be emitted in two ways, either syncronously(sync) or asyncronously(async). If it is emitted in sync it means that the callback must complete(in another thread/context) before returning to the current execution context/thread.  
+
+
+Some signals such as those that call for a dropping of any references when a
+class instance is destroyed are required to be emitted syncronously which
+means that...
+
 Object
- - SignalConnection connect_signal (signal_id, Handler, Callback)
+ - SignalConnectionUP connect_specific_signal (context, std::function<type>)
  - void disconnect_signal (signal_id, Callback)
 
-Callback class
- - signal id
- - Handler ref
- - message_functor
- - user_data
- 
-Handler class
- - call_sync (Callback, Message)
- - call_async (Callback, Message)
-
-Closure class? Callback + Message
+Context class
+ - call_sync (std::function<void()>)
+ - call_async (std::function<void()>)
 
 Signal class list of Callbacks
 
-SignalConnection class
- - scoped signal connection
-
 ## Misc
 
-transport should be in Engine not Application
+Implement checks for memory allocations in RT threads via operator new/malloc etc
+Aim for an API with no raw pointers?
 
-Prevent headers being included directly?
-must only include mojo.hpp and enforce it?
+rename typedef.h headers to types.h
 
-Use Glib::Module and remove mojo/utils/library?
+Transport should be in Project not Application
 
-Move Object class to interfaces?
+Should there be a Session class that has an Engine and a Project?
+Should Session be a singleton or should we allow several Sessions to exist in
+the same Process?
+
+Prevent any mojo headers being included directly? Only include mojo.hpp?
+
+Use Glib::Module and remove mojo/utils/library? or rename mojo::Library to
+mojo::Module and mojo::Module to mojo::Mojule. No too hard to differentiate
+when saying them.
 
 Add ardour/jack_utils code to JackAudioDriverModule to get devices
 
@@ -51,12 +92,7 @@ Merge Worker/ApplicationWorker with gleam::dispatcher?
 
 Rename ApplicationWorker FunctorDispatcher and inherit from gleam::ManualDispatcher
 
-Worker should have its own thread like gleam::dispatcher
-
 include facility for startup messages during initialization?
-
-SearchPath should be renamed search_path so it doesn't clash with SearchPath
-typedef in windows.h
 
 SearchPath should be exposed in mojo public API so it can be used outside of
 libmojo. Not worth putting it in a separate lib.
@@ -135,6 +171,10 @@ Event
 - nudge backward events
 
 Sequence
+
+Test for Audio device sync/xrun at different settings with simulated load
+
+Test for disk/storage read and write speed
 
 # SMPTE
 
