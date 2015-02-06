@@ -1,5 +1,7 @@
 # libmojo
 
+Decide on license
+
 ## Build System
 
 Be able to build static binary with all modules built in
@@ -8,18 +10,34 @@ Be able to build static binary with all modules built in
 
 switch to std:: smart pointer types
 switch to std::bind where possible/necessary
+use std::chrono
 use std::function
 use std::atomic
 use std::regex
 use std:: random number generators
+Replace pointer typedefs with c++11 using keyword
+
+## Boost libs
+
+Use boost::any
+Use boost::typeindex? in mojo/typesystem rather than std::type_info
+use mojo::any alias for any boost classes so reimplementation etc is easier
+
+## Core
+
+Add Spinwait class
+
+Add string/compose.hpp or string/format.hpp
+
+Add logging.hpp
+
+Add threads.hpp to register thread names/memory pools etc?
 
 All methods are async unless a "sync" suffix is appended to the function/method name
 move Object and Typesystem into core?
-Replace pointer typedefs with c++11 using keyword
 Implement custom any type for TypeSystem?
 
 Move fs to core or interface?
-use mojo::any alias for any boost classes so reimplementation etc is easier
 
 Add Context Interface to core
 
