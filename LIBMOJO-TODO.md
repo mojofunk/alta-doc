@@ -25,15 +25,22 @@ use mojo::any alias for any boost classes so reimplementation etc is easier
 
 ## Core
 
-Add Spinwait class
+Make DebugRegistry thread safe
 
-Add string/compose.hpp or string/format.hpp
+Add Timing data logging to MOJO_DEBUG
 
-Add logging.hpp
+Add Thread debug data to MOJO_DEBUG
 
-Add threads.hpp to register thread names/memory pools etc?
+Add Spinwait class, mostly for testing timing atm
 
-All methods are async unless a "sync" suffix is appended to the function/method name
+Add Quark implementation
+
+Add log levels? get/set log handlers? for GUI display etc
+
+Add threads.hpp to register thread names/memory pools for at least debugging etc?
+
+All methods are sync unless a "async" suffix is appended to the function/method name
+
 move Object and Typesystem into core?
 Implement custom any type for TypeSystem?
 
@@ -43,6 +50,9 @@ Add Context Interface to core
 
 Context needs call_sync and call_async methods, call async for normal
 events call_sync for disposing references in other thread contexts.
+
+ContextManager Singleton class so that classes can use named contexts to schedule changes, rather
+than explicit locking? needs further thought
 
 mojo could offer a way to register a Context with a thread so that when
 registering
@@ -84,6 +94,13 @@ Context class
  - call_async (std::function<void()>)
 
 Signal class list of Callbacks
+
+## Memory Management
+
+How should references to mojo:: Objects be exposed?
+- via raw pointers
+- via weak_ptr
+- create via factory returning unique_ptr and then manage in libmojo internally and expose raw pointers
 
 ## Misc
 
@@ -193,6 +210,10 @@ Sequence
 Test for Audio device sync/xrun at different settings with simulated load
 
 Test for disk/storage read and write speed
+
+Change string_convert test so that it changes locale and tests that there
+is no effect on conversion
+
 
 # SMPTE
 
