@@ -296,21 +296,21 @@ If when the last project is removed can App::quit be called in an idle callback.
 ## Debug Macros
 
 Need simple debug library for logging messages.
-	- only compiled in debug mode?
-	- M_DEBUG_ASSERT
-	- M_DEBUG_LOG just takes a string
-	- records line and file
-	- filters?
-	- optional namespace?
-	- command line args?
-	- header only?
-	- per thread logging streams?
+- only compiled in debug mode?
+- M_DEBUG_ASSERT
+- M_DEBUG_MSG just takes a string
+- records line and file
+- filters?
+- optional namespace?
+- command line args?
+- header only?
+- per thread logging streams?
 
 waf test target
 
 timer library for measuring execution time
-	- interface with backends
-	- macro for debug compiling
-	- records line and file
-	- per thread timers?
-	- BEGIN and END or RAII?
+- interface with backends
+- macro for debug compiling
+- records line and file
+- per thread timers?
+- BEGIN and END or RAII?
