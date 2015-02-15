@@ -4,23 +4,33 @@ Decide on license
 
 ## Build System
 
-Be able to build static binary with all modules built in
+Be able to build static binary with all modules built in. How will this affect
+licensing?
 
 ## C++11
 
 switch to std:: smart pointer types
+
 switch to std::bind where possible/necessary
+
 use std::chrono
+
 use std::function
+
 use std::atomic
+
 use std::regex
+
 use std:: random number generators
+
 Replace pointer typedefs with c++11 using keyword
 
 ## Boost libs
 
 Use boost::any
+
 Use boost::typeindex? in mojo/typesystem rather than std::type_info
+
 use mojo::any alias for any boost classes so reimplementation etc is easier
 
 ## Core
@@ -127,51 +137,48 @@ Merge Worker/ApplicationWorker with gleam::dispatcher?
 
 Rename ApplicationWorker FunctorDispatcher and inherit from gleam::ManualDispatcher
 
-include facility for startup messages during initialization?
-
-SearchPath should be exposed in mojo public API so it can be used outside of
-libmojo. Not worth putting it in a separate lib.
+include facility for startup messages during initialization? using mojo::log
 
 ## Modules
 
 Make a generic module infrastructure for libmojo, modules may include
 
 AudioFile modules:
-	SndfileAudioFileModule
-	MadAudioFileModule
-	CoreaudioAudioFileModule
+- SndfileAudioFileModule
+- MadAudioFileModule
+- CoreaudioAudioFileModule
 
 MidiFile modules:
-	JackMidiModule
+- JackMidiModule
 	
 AudioEffectModule:
-	LADSPAEffectModule
-	LV2EffectModule
-	VSTEffectModule
-	DXEffectModule
+- LADSPAEffectModule
+- LV2EffectModule
+- VSTEffectModule
+- DXEffectModule
 
 InstrumentModule:
-	VSTInstrumentModule
-	DXInstrumentModule
+- VSTInstrumentModule
+- DXInstrumentModule
 
 AudioDriverModule:
-	JACKAudioDriverModule
-	ALSAAudioDriverModule
-	PulseAudioDriverModule
-	PortAudioDriverModule
-	VSTAudioDriverModule
+- JACKAudioDriverModule
+- ALSAAudioDriverModule
+- PulseAudioDriverModule
+- PortAudioDriverModule
+- VSTAudioDriverModule
 
 AudioResamplerModule:
-	SRCResamplerModule
-	SpeexResamplerModule
+- SRCResamplerModule
+- SpeexResamplerModule
 
 ProjectImportModule
-	ArdourImportModule
-	AAFImportModule
+- ArdourImportModule
+- AAFImportModule
 
 ProjectExportModule
-	ArdourExportModule
-	AAFExportModule
+- ArdourExportModule
+- AAFExportModule
 
 Try having only one instance of a Module class per module, change
 the module function to mojo_module_init () that allocates Module

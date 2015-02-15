@@ -21,7 +21,7 @@ The type system is used to map types to names.
 
 ## Object class
 
-All object classes are required to be default constructible.
+All classes deriving from mojo::Object are required to be default constructible.
 
 ## Event Callbacks
 
