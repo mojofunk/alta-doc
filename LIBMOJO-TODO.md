@@ -67,6 +67,16 @@ than explicit locking? needs further thought
 mojo could offer a way to register a Context with a thread so that when
 registering
 
+Copy pbd/resource.h from libpbd into mojo/system/
+
+Add mojo::aligned_alloc
+
+Add float/double comparison to mojo/core/math.hpp with tests
+ref: http://www.cygnus-software.com/papers/comparingfloats/comparingfloats.htm
+ref: http://stackoverflow.com/questions/17333/most-effective-way-for-float-and-double-comparison
+
+Add unique_ptr wrappers for std::FILE handles
+ref: http://codereview.stackexchange.com/questions/4679/shared-ptr-and-file-for-wrapping-cstdio-update-also-dlfcn-h
 ## Project class
 
 Should only be one method to add and remove tracks?
@@ -218,6 +228,8 @@ Test for Audio device sync/xrun at different settings with simulated load
 
 Test for disk/storage read and write speed
 
+Test for ability to write large files(> 4Gb)
+
 Change string_convert test so that it changes locale and tests that there
 is no effect on conversion
 
@@ -254,7 +266,8 @@ A sink node is a node with no outgoing edges
 
 A processing node is a node with incoming and outgoing edges
 
-Must be able to add and remove edges.
+Must be able to add and remove edges, although not while processing
+graph.
 
 The source nodes in the graph are processed first as they are
 the source of the data and the edges are followed to process the
@@ -265,7 +278,7 @@ The graph must be able to be processed in parallel.
 Would breadth first processing be more cache friendly?
 
 The API must expose a way to set how many threads are used to process
-the graph.
+the graph. or leave threading out of the lib?
 
 get_max_thread_count
 
@@ -281,6 +294,8 @@ The test suite must be able to measure thread context switching time.
 
 The test suite must be able to test the effect cache size has on processing
 performance.
+
+[ Application API ]
 
 Application API should use method names like transport_* track_* project_* etc
 
@@ -303,6 +318,7 @@ Need simple debug library for logging messages.
 - filters?
 - optional namespace?
 - command line args?
+- MOJO_DEBUG env var
 - header only?
 - per thread logging streams?
 
