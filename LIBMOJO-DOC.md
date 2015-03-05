@@ -6,6 +6,12 @@ libmojo should have as few direct link time library dependencies as possible wit
 
 libmojo intends to directly depend on as few libraries as possible and if possible not expose any library dependencies to client code.
 
+## Amalgamation
+
+Amalgamation is where compilation units are concatenated into a single file
+and then compiled together rather than separately. It can allow for faster
+compile times and better optimisation by the compiler
+
 ## Application
 
 The Application class is the Singleton class that initialises the libmojo library

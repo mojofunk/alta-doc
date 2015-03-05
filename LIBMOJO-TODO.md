@@ -7,6 +7,8 @@ Decide on license
 Be able to build static binary with all modules built in. How will this affect
 licensing?
 
+## Directory Structure
+
 ## C++11
 
 switch to std:: smart pointer types
@@ -15,7 +17,7 @@ switch to std::bind where possible/necessary
 
 use std::chrono
 
-use std::function
+use std::function for connecting signals?
 
 use std::atomic
 
@@ -24,6 +26,11 @@ use std::regex
 use std:: random number generators
 
 Replace pointer typedefs with c++11 using keyword
+
+## Glib
+
+depend on glib for filesystem stuff? or convert between native paths and
+utf-8?
 
 ## Boost libs
 
@@ -54,7 +61,10 @@ All methods are sync unless a "async" suffix is appended to the function/method 
 move Object and Typesystem into core?
 Implement custom any type for TypeSystem?
 
-Move fs to core or interface?
+
+platform defs in core/system/target_platform.hpp MOJO_WINDOWS MOJO_LINUX MOJO_MAC
+
+Add version of mojo::to_string that returns string not bool
 
 Add Context Interface to core
 
@@ -66,8 +76,6 @@ than explicit locking? needs further thought
 
 mojo could offer a way to register a Context with a thread so that when
 registering
-
-Copy pbd/resource.h from libpbd into mojo/system/
 
 Add mojo::aligned_alloc
 
@@ -153,13 +161,17 @@ include facility for startup messages during initialization? using mojo::log
 
 Make a generic module infrastructure for libmojo, modules may include
 
-AudioFile modules:
-- SndfileAudioFileModule
-- MadAudioFileModule
-- CoreaudioAudioFileModule
+Audio/Processor module
 
-MidiFile modules:
-- JackMidiModule
+PannerModule
+
+AudioFileModule:
+- SndfileAudioFileModule
+- CoreaudioAudioFileModule
+- MadAudioFileModule
+
+MidiFileModule:
+- SMFMidiModule
 	
 AudioEffectModule:
 - LADSPAEffectModule
@@ -196,6 +208,8 @@ class(if init hasn't already been called) and returns a pointer to
 it, also add a mojo_module_fini () function to deallocate any
 resources allocated by init for proper shutdown.
 
+should be able to have built in modules aswell as external modules
+
 libmojo must expose a way to discover new modules
 
 modules should only have to link to a small core library if at all
@@ -204,6 +218,8 @@ Should all platform dependent code be in a base library
 which modules can link to? possibly in libgleam
 
 ## Tests
+
+rename mojo/tests/test_log to test_logging
 
 Tests should try to provide full coverage of API
 
@@ -301,12 +317,16 @@ Application API should use method names like transport_* track_* project_* etc
 
 Application API should have a sync method for testing(at least)
 
-Should the mojo public API be in C?
+Should the mojo public API also be in C?
 
 If the ApplicationWorker is calling a sync function and the UI thread is waiting for the
 ApplicationWorker to finish then there is a deadlock?
 
 If when the last project is removed can App::quit be called in an idle callback.
+
+Move public headers into directory structure that mirrors what would be
+if the headers were installed. Instead of include <mojo/mojo.hpp>
+perhaps it should be include <mojo.hpp> and include <mojo/project.hpp> ertc
 
 ## Debug Macros
 
@@ -314,13 +334,17 @@ Need simple debug library for logging messages.
 - only compiled in debug mode?
 - M_DEBUG_ASSERT
 - M_DEBUG_MSG just takes a string
+- MOJO_DEBUG_DOMAIN has problem with amalgamation if used in multiple
+  places with the same DEBUG domain name
 - records line and file
 - filters?
 - optional namespace?
 - command line args?
 - MOJO_DEBUG env var
 - header only?
+- Debugging and logging separate API
 - per thread logging streams?
+- logging lib
 
 waf test target
 

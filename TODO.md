@@ -15,6 +15,7 @@ make dispatcher and interface and have ManualDispatcher and AutomaticDispatcher
 
 Copy Timer implementation from libpbd and modify to depend on glib
 
+only depend on glib, not glibmm?
 
 # Docs
 
