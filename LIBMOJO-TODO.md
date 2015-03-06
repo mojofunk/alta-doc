@@ -48,8 +48,6 @@ Add Timing data logging to MOJO_DEBUG
 
 Add Thread debug data to MOJO_DEBUG
 
-Add Spinwait class, mostly for testing timing atm
-
 Add Quark implementation
 
 Add log levels? get/set log handlers? for GUI display etc
@@ -61,12 +59,19 @@ All methods are sync unless a "async" suffix is appended to the function/method 
 move Object and Typesystem into core?
 Implement custom any type for TypeSystem?
 
-
-platform defs in core/system/target_platform.hpp MOJO_WINDOWS MOJO_LINUX MOJO_MAC
+Move type names in core/typesystem/type_names.hpp somewhere more appropriate
 
 Add version of mojo::to_string that returns string not bool
 
 Add Context Interface to core
+
+Remove boost lib dependencies if possible
+
+Change fs::path to be std::string
+
+Add my code from pbd/file_utils.h to filesystem/utils.h
+
+Add my code for setting/resetting time_begin_period from ardour branch
 
 Context needs call_sync and call_async methods, call async for normal
 events call_sync for disposing references in other thread contexts.
@@ -145,21 +150,25 @@ the same Process?
 
 Prevent any mojo headers being included directly? Only include mojo.hpp?
 
-Use Glib::Module and remove mojo/utils/library? or rename mojo::Library to
-mojo::Module and mojo::Module to mojo::Mojule. No too hard to differentiate
-when saying them.
+Move GlibLibrary functionality to libgleam?
+
+Move all glib dependent code to libgleam? but don't expose dependence via
+libmojo
 
 Add ardour/jack_utils code to JackAudioDriverModule to get devices
 
 Merge Worker/ApplicationWorker with gleam::dispatcher?
 
-Rename ApplicationWorker FunctorDispatcher and inherit from gleam::ManualDispatcher
+Rename ApplicationWorker FunctorDispatcher and inherit from gleam::ManualDispatcher?
 
 include facility for startup messages during initialization? using mojo::log
 
 ## Modules
 
 Make a generic module infrastructure for libmojo, modules may include
+
+Should mojo-core know about the module types and related classes or
+should each module type be in a separate directory with implementations?
 
 Audio/Processor module
 
