@@ -30,11 +30,14 @@ Replace pointer typedefs with c++11 using keyword
 ## Glib
 
 depend on glib for filesystem stuff? or convert between native paths and
-utf-8?
+utf-8? or use boost and install UTF-8 as default global encoding for
+narrow API?
 
 ## Boost libs
 
-Use boost::any
+Use boost::filesystem?
+
+Use boost::any?
 
 Use boost::typeindex? in mojo/typesystem rather than std::type_info
 
@@ -42,13 +45,15 @@ use mojo::any alias for any boost classes so reimplementation etc is easier
 
 ## Core
 
+
 Make DebugRegistry thread safe
 
 Add Timing data logging to MOJO_DEBUG
 
 Add Thread debug data to MOJO_DEBUG
 
-Add Quark implementation
+Add Quark implementation or properly wrap glib impl so glib types are not
+exposed
 
 Add log levels? get/set log handlers? for GUI display etc
 
@@ -56,10 +61,17 @@ Add threads.hpp to register thread names/memory pools for at least debugging etc
 
 All methods are sync unless a "async" suffix is appended to the function/method name
 
-move Object and Typesystem into core?
-Implement custom any type for TypeSystem?
+move typesystem/types.hpp to somewhere better, it doesn't seem to belong in core
+or at least it is not related to typesystem and not used by core but as it is
+needed by most modules it should go somewhere central. Or the modules define
+there own types?
 
 Move type names in core/typesystem/type_names.hpp somewhere more appropriate
+or register them automatically in typesystem
+
+or add core/types/ and add audio.hpp and type_names.hpp...midi.hpp?
+
+Implement custom any type for TypeSystem?
 
 Add version of mojo::to_string that returns string not bool
 
@@ -163,12 +175,21 @@ Rename ApplicationWorker FunctorDispatcher and inherit from gleam::ManualDispatc
 
 include facility for startup messages during initialization? using mojo::log
 
+## Portaudio Module
+
+Investigate whether UNICODE has to be defined to get UTF-8 encoded device names?
+
 ## Modules
 
 Make a generic module infrastructure for libmojo, modules may include
 
-Should mojo-core know about the module types and related classes or
-should each module type be in a separate directory with implementations?
+If for instance AudioDriverModule returned an AudioDriver rather than an
+AudioDevice the audio_driver would not need to depend on core. Perhaps
+it would be better restrict interfaces so that they don't require any
+external libs. This suggests it better to use std::string for path strings
+everywhere and just assume/enforce? it is UTF-8 encoded and modules
+need to manage encoding conversion internally if using platform API's
+that require a different encoding/wide strings etc.
 
 Audio/Processor module
 
