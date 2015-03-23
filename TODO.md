@@ -21,6 +21,8 @@ only depend on glib, not glibmm?
 
 Dev guide section on including headers using " instead of <
 
+Dev guide sectoin on using on the right style const placement
+
 Dev guide section on why _t shouldn't be used for typedefs but
 why we do anyway
 

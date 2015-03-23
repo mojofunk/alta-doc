@@ -7,9 +7,16 @@ Decide on license
 Be able to build static binary with all modules built in. How will this affect
 licensing?
 
+Use only one top level wscript file?
+
+Use compiler flags dictionary in wscript and don't assume compiler. Add a way to specify toolset auto/gcc/clang/msvc
+
 ## Directory Structure
 
 ## C++11
+
+Which ones of the following should be used? most have overlapping functionality with glib. So is it better to rely on glib or c++
+compiler seeing as both are dependencies? Does it really matter if functionality of public API is the same. It really only becomes an issue if for instance MSVC has bogus implementations that require work-arounds etc.
 
 switch to std:: smart pointer types
 
@@ -29,9 +36,7 @@ Replace pointer typedefs with c++11 using keyword
 
 ## Glib
 
-depend on glib for filesystem stuff? or convert between native paths and
-utf-8? or use boost and install UTF-8 as default global encoding for
-narrow API?
+depend on glib for filesystem stuff? or convert between native paths and utf-8? or use boost and install UTF-8 as default global encoding for narrow API?
 
 ## Boost libs
 
@@ -61,10 +66,22 @@ Add threads.hpp to register thread names/memory pools for at least debugging etc
 
 All methods are sync unless a "async" suffix is appended to the function/method name
 
-move typesystem/types.hpp to somewhere better, it doesn't seem to belong in core
-or at least it is not related to typesystem and not used by core but as it is
-needed by most modules it should go somewhere central. Or the modules define
-there own types?
+change samplerate_t type do double
+
+define monotonic_time_t?
+
+move filesystem/* to system/* ?
+
+Add mojo::initialize/terminate
+
+Add alias for mojo::path to boost::filesystem::path?
+
+move mojo/core/audio/types.hpp to mojo/audio/types.hpp
+
+move setting debugging domain from MOJO_DEBUG into mojo::init
+
+std::thread type on mingw-w64 with gcc uses pthread/winpthread lib. Is this
+an issue?
 
 Move type names in core/typesystem/type_names.hpp somewhere more appropriate
 or register them automatically in typesystem
@@ -121,14 +138,17 @@ A signalling system that is used in a context with multiple threads has to guara
 
 When a signal is emitted the functor that is dispatched will always know in which context the callback should be executed in. In the case of a Gtk+ based UI the callback should be executed in the default Gtk+ context. A class could connect the same signal handler to several signals. These signals could be emitted in several different threads, which means the class needs an internal event processing mechanism to process the events in the right thread/context.
 
-There are two options: A pointer to a class instance could be passed to the signal connection interface so that when a signal is emitted it can be emitted in the context that has been registered. This has the advantage in that 
+### Option 1: pass in pointer to "Context" class
+
+There are two options: A pointer to a class instance could be passed to the signal connection interface so that when a signal is emitted it can be emitted in the context that has been registered.
+
+This has the advantage in that 
 
 The signal could be emitted in two ways, either syncronously(sync) or asyncronously(async). If it is emitted in sync it means that the callback must complete(in another thread/context) before returning to the current execution context/thread.  
 
+### Option 2: signal handler determines Context to process signal
 
-Some signals such as those that call for a dropping of any references when a
-class instance is destroyed are required to be emitted syncronously which
-means that...
+Some signals such as those that call for a dropping of any references when a class instance is destroyed are required to be emitted syncronously which means that...
 
 Object
  - SignalConnectionUP connect_specific_signal (context, std::function<type>)
@@ -183,13 +203,9 @@ Investigate whether UNICODE has to be defined to get UTF-8 encoded device names?
 
 Make a generic module infrastructure for libmojo, modules may include
 
-If for instance AudioDriverModule returned an AudioDriver rather than an
-AudioDevice the audio_driver would not need to depend on core. Perhaps
-it would be better restrict interfaces so that they don't require any
-external libs. This suggests it better to use std::string for path strings
-everywhere and just assume/enforce? it is UTF-8 encoded and modules
-need to manage encoding conversion internally if using platform API's
-that require a different encoding/wide strings etc.
+If for instance AudioDriverModule returned an AudioDriver rather than an AudioDevice the audio_driver would not need to depend on core. Perhaps it would be better restrict interfaces so that they don't require any external libs. This suggests it better to use std::string for path strings everywhere and just assume/enforce? it is UTF-8 encoded and modules need to manage encoding conversion internally if using platform API's that require a different encoding/wide strings etc.
+
+Modules are located in there own directory and should only depend on the core library
 
 Audio/Processor module
 
@@ -377,6 +393,7 @@ Need simple debug library for logging messages.
 - logging lib
 
 waf test target
+build a single test executable
 
 timer library for measuring execution time
 - interface with backends
