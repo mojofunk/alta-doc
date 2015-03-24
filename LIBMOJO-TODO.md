@@ -201,7 +201,7 @@ Make a generic module infrastructure for libmojo, modules may include
 
 If for instance AudioDriverModule returned an AudioDriver rather than an AudioDevice the audio_driver would not need to depend on core. Perhaps it would be better restrict interfaces so that they don't require any external libs. This suggests it better to use std::string for path strings everywhere and just assume/enforce? it is UTF-8 encoded and modules need to manage encoding conversion internally if using platform API's that require a different encoding/wide strings etc.
 
-Modules are located in there own directory and should only depend on the core library
+Modules are located in there own directory and should not have to depend on any other library but in practice will depend on mojo-core. This allows would allow out of tree modules that don't depend on any mojo libraries.
 
 Audio/Processor module
 

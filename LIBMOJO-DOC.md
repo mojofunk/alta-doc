@@ -18,8 +18,7 @@ The Application class is the Singleton class that initialises the libmojo librar
 
 ## Core
 
-The core directory contains headers that are necessary for all mojules. This
-will be visibility macros.
+The core library contains headers that are necessary for all mojules. This will be visibility macros.
 
 ## Type System
 
