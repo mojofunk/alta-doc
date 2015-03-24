@@ -5,7 +5,7 @@ Decide on license
 ## Build System
 
 Be able to build static binary with all modules built in. How will this affect
-licensing?
+licensing? It won't as all non-GPL licensed code will remain in modules.
 
 Use only one top level wscript file?
 
@@ -50,7 +50,6 @@ use mojo::any alias for any boost classes so reimplementation etc is easier
 
 ## Core
 
-
 Make DebugRegistry thread safe
 
 Add Timing data logging to MOJO_DEBUG
@@ -66,19 +65,18 @@ Add threads.hpp to register thread names/memory pools for at least debugging etc
 
 All methods are sync unless a "async" suffix is appended to the function/method name
 
-change samplerate_t type do double
+change samplerate_t type to double
 
 define monotonic_time_t?
 
 move filesystem/* to system/* ?
 
-Add mojo::initialize/terminate
+Add mojo::debug::init/deinit? issue with static initialization order and
+MOJO_DEBUG_DOMAIN macro
 
 Add alias for mojo::path to boost::filesystem::path?
 
 move mojo/core/audio/types.hpp to mojo/audio/types.hpp
-
-move setting debugging domain from MOJO_DEBUG into mojo::init
 
 std::thread type on mingw-w64 with gcc uses pthread/winpthread lib. Is this
 an issue?
@@ -86,19 +84,17 @@ an issue?
 Move type names in core/typesystem/type_names.hpp somewhere more appropriate
 or register them automatically in typesystem
 
-or add core/types/ and add audio.hpp and type_names.hpp...midi.hpp?
-
 Implement custom any type for TypeSystem?
 
 Add version of mojo::to_string that returns string not bool
 
 Add Context Interface to core
 
-Remove boost lib dependencies if possible
+Remove boost lib dependencies if possible or at least publicly exposed deps
 
-Change fs::path to be std::string
+Change fs::path to be std::string? or just change modules to take std::string
 
-Add my code from pbd/file_utils.h to filesystem/utils.h
+Add my code from pbd/file_utils.h to filesystem/utils.h that is relevant and test
 
 Add my code for setting/resetting time_begin_period from ardour branch
 
@@ -269,6 +265,11 @@ rename mojo/tests/test_log to test_logging
 
 Tests should try to provide full coverage of API
 
+Test that checks visibility
+
+Thorough testing of mojo::Typesystem is needed
+Add init/deinit static functions to all "Singleton" classes
+
 All tests should also test that undo/redo work properly. one way to do
 that would be to make a copy of an object then change it, check for inequality
 then call undo and check for equality. also copy the changed state(before undo)
@@ -381,7 +382,8 @@ Need simple debug library for logging messages.
 - M_DEBUG_ASSERT
 - M_DEBUG_MSG just takes a string
 - MOJO_DEBUG_DOMAIN has problem with amalgamation if used in multiple
-  places with the same DEBUG domain name
+  source files with the same DEBUG domain name as it will cause double definition
+  of variable.
 - records line and file
 - filters?
 - optional namespace?
