@@ -67,6 +67,8 @@ All methods are sync unless a "async" suffix is appended to the function/method 
 
 change samplerate_t type to double
 
+add get_common_samplerates to core/audio/utils.hpp
+
 define monotonic_time_t?
 
 move filesystem/* to system/* ?
@@ -203,6 +205,8 @@ If for instance AudioDriverModule returned an AudioDriver rather than an AudioDe
 
 Modules are located in there own directory and should not have to depend on any other library but in practice will depend on mojo-core. This allows would allow out of tree modules that don't depend on any mojo libraries.
 
+Add AudioStream class opened via AudioDevice
+
 Audio/Processor module
 
 PannerModule
@@ -267,7 +271,10 @@ Tests should try to provide full coverage of API
 
 Test that checks visibility
 
+Write test output to a temp directory
+
 Thorough testing of mojo::Typesystem is needed
+
 Add init/deinit static functions to all "Singleton" classes
 
 All tests should also test that undo/redo work properly. one way to do
