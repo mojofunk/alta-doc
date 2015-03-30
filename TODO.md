@@ -37,14 +37,12 @@ Dev guide section on including headers using " instead of <
 
 Dev guide sectoin on using on the right style const placement
 
-Dev guide section on why _t shouldn't be used for typedefs but
-why we do anyway
+Dev guide section on why _t shouldn't be used for typedefs but why we do anyway
 
 Convert docs to publician
 
-Update section on header include guards include style where there
-is no class defined in the file. eg mojo/core/typedefs.hpp ->
-MOJO_CORE_TYPEDEFS
+Update section on header include guards include style where there is no class
+defined in the file. eg mojo/core/typedefs.hpp -> MOJO_CORE_TYPEDEFS
 
 Add section on typedefs for Glib::RefPtr and boost::shared_ptr
 

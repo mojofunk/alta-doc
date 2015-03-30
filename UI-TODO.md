@@ -3,8 +3,8 @@
 ui::Application inherits from Gtk::Application or stick to composition?
 
 Track Canvas
-	- change height from the track view list
-	- add border/frame to TrackViewListItem
+- change height from the track view list
+- add border/frame to TrackViewListItem
 
 Add ToolButtons class
 
@@ -12,28 +12,30 @@ Rename TransportToolbar TransportButtons
 
 Add Stop, Locate to start, Locate to End buttons to TransportButtons
 
-Add Inspector class
-Add StatusLine class
-Add InfoLine class
-Add ProjectOverview class
+Add Classes:
+- Inspector
+- StatusLine
+- InfoLine
+- ProjectOverview
 
 Add WindowLayoutDialog and button to ProjectWindowToolbar
 
 # Gtk+
 
-What are the benefits/tradeoffs with using Gtk+ directly and removing dependency on gtkmm. Current UI(such that it is) uses gtkmm but with ui files and resources.
+What are the benefits/tradeoffs with using Gtk+ directly and removing
+dependency on gtkmm. Current UI(such that it is) uses gtkmm but with ui files
+and resources.
 
 Gtkmm Positives vs Gtk+:
-C++ style API
-template based signals/events
+- C++ style API template based signals/events
 
 Gtkmm Negatives vs Gtk+:
-More dependencies, makes MSVC build harder
-Not as well tested API wise as Gtk+?
-More overhead with wrapper/signal emission(possibly negligible)
+- More dependencies, makes MSVC build harder
+- Not as well tested API wise as Gtk+?
+- More overhead with wrapper/signal emission(possibly negligible)
 
 Gtk+ Positives:
 
 Gtk+ Negatives:
-Fast moving API? deprecations etc
-Cross platform support seems poor
+- Fast moving API? deprecations etc
+- Cross platform support seems poor

@@ -1,24 +1,30 @@
 # Mojo library
 
-The mojo library is the top level library on top of which a User Interface is built.
+The mojo library is the top level library on top of which a User Interface is
+built.
 
-libmojo should have as few direct link time library dependencies as possible with most functionality implemented in mojules(modules) that contain implementations of interfaces defined in mojo/interaces.
+libmojo should have as few direct link time library dependencies as possible
+with most functionality implemented in mojules(modules) that contain
+implementations of interfaces defined in mojo/interaces.
 
-libmojo intends to directly depend on as few libraries as possible and if possible not expose any library dependencies to client code.
+libmojo intends to directly depend on as few libraries as possible and if
+possible not expose any library dependencies to client code.
 
 ## Amalgamation
 
-Amalgamation is where compilation units are concatenated into a single file
-and then compiled together rather than separately. It can allow for faster
-compile times and better optimisation by the compiler
+Amalgamation is where compilation units are concatenated into a single file and
+then compiled together rather than separately. It can allow for faster compile
+times and better optimisation by the compiler
 
 ## Application
 
-The Application class is the Singleton class that initialises the libmojo library
+The Application class is the Singleton class that initialises the libmojo
+library
 
 ## Core
 
-The core library contains headers that are necessary for all mojules. This will be visibility macros.
+The core library contains headers that are necessary for all mojules. This will
+be visibility macros.
 
 ## Type System
 
@@ -26,19 +32,19 @@ The type system is used to map types to names.
 
 ## Object class
 
-All classes deriving from mojo::Object are required to be default constructible.
+All classes deriving from mojo::Object are required to be default
+constructible.
 
 ## Event Callbacks
 
-Each class defines
-## Threads
+Each class defines ## Threads
 
 ## Mojules
 
 ## System
 
-The system directory contains all the system level abstractions
-things like filesystem, resource management
+The system directory contains all the system level abstractions things like
+filesystem, resource management
 
 ## API
 

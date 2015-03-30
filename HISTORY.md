@@ -2,7 +2,7 @@
 
 The command history is used for restoring the project to previous states.
 
-A Command needs to be able to serialized which means it inherits from the 
+A Command needs to be able to serialized which means it inherits from the
 Object class and impliment Object::get/set_properties.
 
 If Commands can contain references to functions or methods for restoring state
@@ -13,7 +13,7 @@ A Command can contain either a FunctionObject or a MethodObject?
 
 The properties of a command are named arguments.
 
-When a Command is executed the named arguments are used when calling the 
+When a Command is executed the named arguments are used when calling the
 underlying function.
 
 A Command is an interface

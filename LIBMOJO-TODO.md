@@ -4,18 +4,24 @@ Decide on license
 
 ## Build System
 
-Be able to build static binary with all modules built in. How will this affect licensing? It won't as all non-GPL licensed code will remain in modules and module API is appropriately licenced.
+Be able to build static binary with all modules built in. How will this affect
+licensing? It won't as all non-GPL licensed code will remain in modules and
+module API is appropriately licenced.
 
 Use only one top level wscript file?
 
-Use compiler flags dictionary in wscript and don't assume compiler. Add a way to specify toolset auto/gcc/clang/msvc
+Use compiler flags dictionary in wscript and don't assume compiler. Add a way
+to specify toolset auto/gcc/clang/msvc
 
 ## Directory Structure
 
 ## C++11
 
-Which ones of the following should be used? most have overlapping functionality with glib. So is it better to rely on glib or c++
-compiler seeing as both are dependencies? Does it really matter if functionality of public API is the same. It really only becomes an issue if for instance MSVC has bogus implementations that require work-arounds etc.
+Which ones of the following should be used? most have overlapping functionality
+with glib. So is it better to rely on glib or c++ compiler seeing as both are
+dependencies? Does it really matter if functionality of public API is the same.
+It really only becomes an issue if for instance MSVC has bogus implementations
+that require work-arounds etc.
 
 switch to std:: smart pointer types
 
@@ -35,7 +41,8 @@ Replace pointer typedefs with c++11 using keyword
 
 ## Glib
 
-depend on glib for filesystem stuff? or convert between native paths and utf-8? or use boost and install UTF-8 as default global encoding for narrow API?
+depend on glib for filesystem stuff? or convert between native paths and utf-8?
+or use boost and install UTF-8 as default global encoding for narrow API?
 
 ## Boost libs
 
@@ -62,9 +69,11 @@ exposed
 
 Add log levels? get/set log handlers? for GUI display etc
 
-Add threads.hpp to register thread names/memory pools for at least debugging etc?
+Add threads.hpp to register thread names/memory pools for at least debugging
+etc?
 
-All methods are sync unless a "async" suffix is appended to the function/method name
+All methods are sync unless a "async" suffix is appended to the function/method
+name
 
 DONE - change samplerate_t type to double
 
@@ -81,11 +90,11 @@ Add alias for mojo::path to boost::filesystem::path?
 
 move mojo/core/audio/types.hpp to mojo/audio/types.hpp
 
-std::thread type on mingw-w64 with gcc uses pthread/winpthread lib. Is this
-an issue?
+std::thread type on mingw-w64 with gcc uses pthread/winpthread lib. Is this an
+issue?
 
-Move type names in core/typesystem/type_names.hpp somewhere more appropriate
-or register them automatically in typesystem
+Move type names in core/typesystem/type_names.hpp somewhere more appropriate or
+register them automatically in typesystem
 
 Implement custom any type for TypeSystem?
 
@@ -97,27 +106,28 @@ Remove boost lib dependencies if possible or at least publicly exposed deps
 
 Change fs::path to be std::string? or just change modules to take std::string
 
-Add my code from pbd/file_utils.h to filesystem/utils.h that is relevant and test
+Add my code from pbd/file_utils.h to filesystem/utils.h that is relevant and
+test
 
 Add my code for setting/resetting time_begin_period from ardour branch
 
-Context needs call_sync and call_async methods, call async for normal
-events call_sync for disposing references in other thread contexts.
+Context needs call_sync and call_async methods, call async for normal events
+call_sync for disposing references in other thread contexts.
 
-ContextManager Singleton class so that classes can use named contexts to schedule changes, rather
-than explicit locking? needs further thought
+ContextManager Singleton class so that classes can use named contexts to
+schedule changes, rather than explicit locking? needs further thought
 
 mojo could offer a way to register a Context with a thread so that when
 registering
 
 Add mojo::aligned_alloc
 
-Add float/double comparison to mojo/core/math.hpp with tests
-ref: http://www.cygnus-software.com/papers/comparingfloats/comparingfloats.htm
-ref: http://stackoverflow.com/questions/17333/most-effective-way-for-float-and-double-comparison
+Add float/double comparison to mojo/core/math.hpp with tests ref:
+http://www.cygnus-software.com/papers/comparingfloats/comparingfloats.htm ref:
+http://stackoverflow.com/questions/17333/most-effective-way-for-float-and-double-comparison
 
-Add unique_ptr wrappers for std::FILE handles
-ref: http://codereview.stackexchange.com/questions/4679/shared-ptr-and-file-for-wrapping-cstdio-update-also-dlfcn-h
+Add unique_ptr wrappers for std::FILE handles ref:
+http://codereview.stackexchange.com/questions/4679/shared-ptr-and-file-for-wrapping-cstdio-update-also-dlfcn-h
 ## Project class
 
 Should only be one method to add and remove tracks?
@@ -127,27 +137,47 @@ Should only be one method to add and remove tracks?
 Move away from the centralised event/signal system the is in place for
 ApplicationEventHandler interface.
 
-There are many ways to implement event propagation/signals. The two more common techniques are using a Listener interface or Anonymous signalling system. Both use function or class member pointers to communicate data to other areas of code. 
+There are many ways to implement event propagation/signals. The two more common
+techniques are using a Listener interface or Anonymous signalling system. Both
+use function or class member pointers to communicate data to other areas of
+code. 
 
-A Listener interface has some level of class coupling via the Listener interface. An anonymous signal system has no coupling between classes.
+A Listener interface has some level of class coupling via the Listener
+interface. An anonymous signal system has no coupling between classes.
 
-When a class is listening/connected to a signals of another class there are various class lifetime management issues to be taken into consideration. When methods of each class are executed in more than a single thread context it complicates things further.
+When a class is listening/connected to a signals of another class there are
+various class lifetime management issues to be taken into consideration. When
+methods of each class are executed in more than a single thread context it
+complicates things further.
 
-A signalling system that is used in a context with multiple threads has to guarantee thread safety.
+A signalling system that is used in a context with multiple threads has to
+guarantee thread safety.
 
-When a signal is emitted the functor that is dispatched will always know in which context the callback should be executed in. In the case of a Gtk+ based UI the callback should be executed in the default Gtk+ context. A class could connect the same signal handler to several signals. These signals could be emitted in several different threads, which means the class needs an internal event processing mechanism to process the events in the right thread/context.
+When a signal is emitted the functor that is dispatched will always know in
+which context the callback should be executed in. In the case of a Gtk+ based
+UI the callback should be executed in the default Gtk+ context. A class could
+connect the same signal handler to several signals. These signals could be
+emitted in several different threads, which means the class needs an internal
+event processing mechanism to process the events in the right thread/context.
 
 ### Option 1: pass in pointer to "Context" class
 
-There are two options: A pointer to a class instance could be passed to the signal connection interface so that when a signal is emitted it can be emitted in the context that has been registered.
+There are two options: A pointer to a class instance could be passed to the
+signal connection interface so that when a signal is emitted it can be emitted
+in the context that has been registered.
 
 This has the advantage in that 
 
-The signal could be emitted in two ways, either syncronously(sync) or asyncronously(async). If it is emitted in sync it means that the callback must complete(in another thread/context) before returning to the current execution context/thread.  
+The signal could be emitted in two ways, either syncronously(sync) or
+asyncronously(async). If it is emitted in sync it means that the callback must
+complete(in another thread/context) before returning to the current execution
+context/thread.  
 
 ### Option 2: signal handler determines Context to process signal
 
-Some signals such as those that call for a dropping of any references when a class instance is destroyed are required to be emitted syncronously which means that...
+Some signals such as those that call for a dropping of any references when a
+class instance is destroyed are required to be emitted syncronously which means
+that...
 
 Object
  - SignalConnectionUP connect_specific_signal (context, std::function<type>)
@@ -164,20 +194,21 @@ Signal class list of Callbacks
 How should references to mojo:: Objects be exposed?
 - via raw pointers
 - via weak_ptr
-- create via factory returning unique_ptr and then manage in libmojo internally and expose raw pointers
+- create via factory returning unique_ptr and then manage in libmojo internally
+  and expose raw pointers
 
 ## Misc
 
-Implement checks for memory allocations in RT threads via operator new/malloc etc
-Aim for an API with no raw pointers?
+Implement checks for memory allocations in RT threads via operator new/malloc
+etc Aim for an API with no raw pointers?
 
 rename typedef.h headers to types.h
 
 Transport should be in Project not Application
 
-Should there be a Session class that has an Engine and a Project?
-Should Session be a singleton or should we allow several Sessions to exist in
-the same Process?
+Should there be a Session class that has an Engine and a Project?  Should
+Session be a singleton or should we allow several Sessions to exist in the same
+Process?
 
 Prevent any mojo headers being included directly? Only include mojo.hpp?
 
@@ -190,21 +221,32 @@ Add ardour/jack_utils code to JackAudioDriverModule to get devices
 
 Merge Worker/ApplicationWorker with gleam::dispatcher?
 
-Rename ApplicationWorker FunctorDispatcher and inherit from gleam::ManualDispatcher?
+Rename ApplicationWorker FunctorDispatcher and inherit from
+gleam::ManualDispatcher?
 
 include facility for startup messages during initialization? using mojo::log
 
 ## Portaudio Module
 
-Investigate whether UNICODE has to be defined to get UTF-8 encoded device names?
+Investigate whether UNICODE has to be defined to get UTF-8 encoded device
+names?
 
 ## Modules
 
 Make a generic module infrastructure for libmojo, modules may include
 
-If for instance AudioDriverModule returned an AudioDriver rather than an AudioDevice the audio_driver would not need to depend on core. Perhaps it would be better restrict interfaces so that they don't require any external libs. This suggests it better to use std::string for path strings everywhere and just assume/enforce? it is UTF-8 encoded and modules need to manage encoding conversion internally if using platform API's that require a different encoding/wide strings etc.
+If for instance AudioDriverModule returned an AudioDriver rather than an
+AudioDevice the audio_driver would not need to depend on core. Perhaps it would
+be better restrict interfaces so that they don't require any external libs.
+This suggests it better to use std::string for path strings everywhere and just
+assume/enforce? it is UTF-8 encoded and modules need to manage encoding
+conversion internally if using platform API's that require a different
+encoding/wide strings etc.
 
-Modules are located in there own directory and should not have to depend on any other library but in practice will depend on mojo-core. This allows would allow out of tree modules that don't depend on any mojo libraries. It also makes it easier to use the interface and implementation in external code(ARDOUR)
+Modules are located in there own directory and should not have to depend on any
+other library but in practice will depend on mojo-core. This allows would allow
+out of tree modules that don't depend on any mojo libraries. It also makes it
+easier to use the interface and implementation in external code(ARDOUR)
 
 remove get suffix from all AudioDevice methods as there is no set
 
@@ -226,7 +268,10 @@ Add AudioDriver::get_default_input_device
 
 Add AudioDriver::get_default_output_device
 
-Build Dummy/Skeleton module for each interface type that doesn't link to mojo-core to test that module implementations aren't required to link to mojo-core. mojo-core.hpp will be included by all modules for at least mojo::Module but it should only need type definitions in headers etc.
+Build Dummy/Skeleton module for each interface type that doesn't link to
+mojo-core to test that module implementations aren't required to link to
+mojo-core. mojo-core.hpp will be included by all modules for at least
+mojo::Module but it should only need type definitions in headers etc.
 
 Audio/Processor module
 
@@ -272,11 +317,10 @@ ProjectExportModule
 - ArdourExportModule
 - AAFExportModule
 
-Try having only one instance of a Module class per module, change
-the module function to mojo_module_init () that allocates Module
-class(if init hasn't already been called) and returns a pointer to
-it, also add a mojo_module_fini () function to deallocate any
-resources allocated by init for proper shutdown.
+Try having only one instance of a Module class per module, change the module
+function to mojo_module_init () that allocates Module class(if init hasn't
+already been called) and returns a pointer to it, also add a mojo_module_fini
+() function to deallocate any resources allocated by init for proper shutdown.
 
 should be able to have built in modules aswell as external modules
 
@@ -284,8 +328,8 @@ libmojo must expose a way to discover new modules
 
 modules should only have to link to a small core library if at all
 
-Should all platform dependent code be in a base library
-which modules can link to? possibly in libgleam
+Should all platform dependent code be in a base library which modules can link
+to? possibly in libgleam
 
 ## Tests
 
@@ -303,10 +347,10 @@ Thorough testing of mojo::Typesystem is needed
 
 Add init/deinit static functions to all "Singleton" classes
 
-All tests should also test that undo/redo work properly. one way to do
-that would be to make a copy of an object then change it, check for inequality
-then call undo and check for equality. also copy the changed state(before undo)
-, call redo and check for equality
+All tests should also test that undo/redo work properly. one way to do that
+would be to make a copy of an object then change it, check for inequality then
+call undo and check for equality. also copy the changed state(before undo) ,
+call redo and check for equality
 
 Create a complex new project using all data types, save, close and restore.
 
@@ -326,8 +370,8 @@ Test for disk/storage read and write speed
 
 Test for ability to write large files(> 4Gb)
 
-Change string_convert test so that it changes locale and tests that there
-is no effect on conversion
+Change string_convert test so that it changes locale and tests that there is no
+effect on conversion
 
 Write a TestAudioDevice that generates different test tones etc
 
@@ -337,9 +381,8 @@ Write a TestMIDIDevice that generates different MIDI event messages etc
 
 Use libltc
 
-smpte::time interface with implementations for each time type
-vs
-one class with enum for each type(4)
+smpte::time interface with implementations for each time type vs one class with
+enum for each type(4)
 
 The later may be slightly slower due to branching.
 
@@ -365,27 +408,23 @@ A sink node is a node with no outgoing edges
 
 A processing node is a node with incoming and outgoing edges
 
-Must be able to add and remove edges, although not while processing
-graph.
+Must be able to add and remove edges, although not while processing graph.
 
-The source nodes in the graph are processed first as they are
-the source of the data and the edges are followed to process the
-rest of the nodes.
+The source nodes in the graph are processed first as they are the source of the
+data and the edges are followed to process the rest of the nodes.
 
 The graph must be able to be processed in parallel.
 
 Would breadth first processing be more cache friendly?
 
-The API must expose a way to set how many threads are used to process
-the graph. or leave threading out of the lib?
+The API must expose a way to set how many threads are used to process the
+graph. or leave threading out of the lib?
 
 get_max_thread_count
 
-get_thread_count
-set_thread_count
+get_thread_count set_thread_count
 
-// optional
-get_optimal_thread_count
+// optional get_optimal_thread_count
 
 The test suite must be able to measure total process time
 
@@ -402,14 +441,15 @@ Application API should have a sync method for testing(at least)
 
 Should the mojo public API also be in C?
 
-If the ApplicationWorker is calling a sync function and the UI thread is waiting for the
-ApplicationWorker to finish then there is a deadlock?
+If the ApplicationWorker is calling a sync function and the UI thread is
+waiting for the ApplicationWorker to finish then there is a deadlock?
 
-If when the last project is removed can App::quit be called in an idle callback.
+If when the last project is removed can App::quit be called in an idle
+callback.
 
-Move public headers into directory structure that mirrors what would be
-if the headers were installed. Instead of include <mojo/mojo.hpp>
-perhaps it should be include <mojo.hpp> and include <mojo/project.hpp> ertc
+Move public headers into directory structure that mirrors what would be if the
+headers were installed. Instead of include <mojo/mojo.hpp> perhaps it should be
+include <mojo.hpp> and include <mojo/project.hpp> ertc
 
 ## Debug Macros
 
@@ -417,9 +457,9 @@ Need simple debug library for logging messages.
 - only compiled in debug mode?
 - M_DEBUG_ASSERT
 - M_DEBUG_MSG just takes a string
-- MOJO_DEBUG_DOMAIN has problem with amalgamation if used in multiple
-  source files with the same DEBUG domain name as it will cause double definition
-  of variable.
+- MOJO_DEBUG_DOMAIN has problem with amalgamation if used in multiple source
+  files with the same DEBUG domain name as it will cause double definition of
+  variable.
 - records line and file
 - filters?
 - optional namespace?
@@ -430,8 +470,7 @@ Need simple debug library for logging messages.
 - per thread logging streams?
 - logging lib
 
-waf test target
-build a single test executable
+waf test target build a single test executable
 
 timer library for measuring execution time
 - interface with backends
