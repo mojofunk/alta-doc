@@ -1,11 +1,19 @@
 # General
 
-Add license headers to files where necessary, using scripts to add copyright
-headers and update year etc
+Add license headers to files where necessary, using scripts to add
+copyright headers and update year etc
+
+Add script to tools/ to add/replace vim/emacs file formatting directives
+to the end of all files
+
+DONE - Add client side pre-commit hook to check for source code formatting
+Add server side hook to check for source code formatting?
+
+Add client side pre-commit hook to check for wscript formatting
 
 # Build System
 
-automatic formatting of python code
+DONE - Automatic formatting of python code
 
 make each sub wscript standalone
 
@@ -18,6 +26,12 @@ Copy Timer implementation from libpbd and modify to depend on glib
 only depend on glib, not glibmm?
 
 # Docs
+
+Dev guide section on typical development workflow.
+
+Dev guide section on clang-format and vim integration
+
+Dev guide section on tabs vs spaces and using tabs for indentation
 
 Dev guide section on including headers using " instead of <
 
@@ -34,7 +48,7 @@ MOJO_CORE_TYPEDEFS
 
 Add section on typedefs for Glib::RefPtr and boost::shared_ptr
 
-Section on mojo/macros.hpp forward class decl and typedefs.
+Section on libmojo style forward class decl and typedefs.
 
 Section on file name standard for test files
 

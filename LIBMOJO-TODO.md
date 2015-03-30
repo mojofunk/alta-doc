@@ -4,8 +4,7 @@ Decide on license
 
 ## Build System
 
-Be able to build static binary with all modules built in. How will this affect
-licensing? It won't as all non-GPL licensed code will remain in modules.
+Be able to build static binary with all modules built in. How will this affect licensing? It won't as all non-GPL licensed code will remain in modules and module API is appropriately licenced.
 
 Use only one top level wscript file?
 
@@ -50,6 +49,8 @@ use mojo::any alias for any boost classes so reimplementation etc is easier
 
 ## Core
 
+Add unique pointer typedefs to mojo/typesystem/smart_pointer_macros.hpp
+
 Make DebugRegistry thread safe
 
 Add Timing data logging to MOJO_DEBUG
@@ -65,7 +66,7 @@ Add threads.hpp to register thread names/memory pools for at least debugging etc
 
 All methods are sync unless a "async" suffix is appended to the function/method name
 
-change samplerate_t type to double
+DONE - change samplerate_t type to double
 
 add get_common_samplerates to core/audio/utils.hpp
 
@@ -203,9 +204,29 @@ Make a generic module infrastructure for libmojo, modules may include
 
 If for instance AudioDriverModule returned an AudioDriver rather than an AudioDevice the audio_driver would not need to depend on core. Perhaps it would be better restrict interfaces so that they don't require any external libs. This suggests it better to use std::string for path strings everywhere and just assume/enforce? it is UTF-8 encoded and modules need to manage encoding conversion internally if using platform API's that require a different encoding/wide strings etc.
 
-Modules are located in there own directory and should not have to depend on any other library but in practice will depend on mojo-core. This allows would allow out of tree modules that don't depend on any mojo libraries.
+Modules are located in there own directory and should not have to depend on any other library but in practice will depend on mojo-core. This allows would allow out of tree modules that don't depend on any mojo libraries. It also makes it easier to use the interface and implementation in external code(ARDOUR)
 
-Add AudioStream class opened via AudioDevice
+remove get suffix from all AudioDevice methods as there is no set
+
+Add AudioDevice::open without input/output/samplerate parameters that just
+opens the device with defaults?
+
+Rename AudioDriver to AudioDeviceManager?
+
+Define midi/audio_driver_error_t outside of MIDI/AudioDevice class? may
+simplify return type definition in source files
+
+Add DevicesChanged callback to AudioDriver
+
+Add manual refresh_devices method to AudioDriver?
+
+Add stop/close_devices method to AudioDriver and call on AudioDriver dtor?
+
+Add AudioDriver::get_default_input_device
+
+Add AudioDriver::get_default_output_device
+
+Build Dummy/Skeleton module for each interface type that doesn't link to mojo-core to test that module implementations aren't required to link to mojo-core. mojo-core.hpp will be included by all modules for at least mojo::Module but it should only need type definitions in headers etc.
 
 Audio/Processor module
 
@@ -218,7 +239,7 @@ AudioFileModule:
 
 MidiFileModule:
 - SMFMidiModule
-	
+
 AudioEffectModule:
 - LADSPAEffectModule
 - LV2EffectModule
@@ -235,6 +256,9 @@ AudioDriverModule:
 - PulseAudioDriverModule
 - PortAudioDriverModule
 - VSTAudioDriverModule
+
+MIDIDriverModule:
+- PortMIDIDriverModule
 
 AudioResamplerModule:
 - SRCResamplerModule
@@ -266,6 +290,8 @@ which modules can link to? possibly in libgleam
 ## Tests
 
 rename mojo/tests/test_log to test_logging
+
+Add function to mojo/test_common.hpp to get a test::tmp_i18n_writable_directory
 
 Tests should try to provide full coverage of API
 
@@ -303,6 +329,9 @@ Test for ability to write large files(> 4Gb)
 Change string_convert test so that it changes locale and tests that there
 is no effect on conversion
 
+Write a TestAudioDevice that generates different test tones etc
+
+Write a TestMIDIDevice that generates different MIDI event messages etc
 
 # SMPTE
 
