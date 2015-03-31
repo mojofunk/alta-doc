@@ -13,9 +13,13 @@ Use only one top level wscript file?
 Use compiler flags dictionary in wscript and don't assume compiler. Add a way
 to specify toolset auto/gcc/clang/msvc
 
+Add option to compile with clang on linux
+
 ## Directory Structure
 
 ## C++11
+
+Use range based for loops where applicable
 
 Which ones of the following should be used? most have overlapping functionality
 with glib. So is it better to rely on glib or c++ compiler seeing as both are
@@ -77,7 +81,7 @@ name
 
 DONE - change samplerate_t type to double
 
-add get_common_samplerates to core/audio/utils.hpp
+DONE - add get_common_samplerates to core/audio/utils.hpp
 
 define monotonic_time_t?
 
@@ -339,6 +343,8 @@ Add function to mojo/test_common.hpp to get a test::tmp_i18n_writable_directory
 
 Tests should try to provide full coverage of API
 
+Add option to use gcov
+
 Test that checks visibility
 
 Write test output to a temp directory
@@ -355,6 +361,8 @@ call redo and check for equality
 Create a complex new project using all data types, save, close and restore.
 
 char encoding tests etc
+
+test source code doc coverage
 
 Event
 
