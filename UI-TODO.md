@@ -10,6 +10,8 @@ Add ToolButtons class
 
 Rename TransportToolbar TransportButtons
 
+Rename gmojo_search_path to alta_search_path
+
 Add Stop, Locate to start, Locate to End buttons to TransportButtons
 
 Add Classes:

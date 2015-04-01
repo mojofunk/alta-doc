@@ -252,6 +252,9 @@ other library but in practice will depend on mojo-core. This allows would allow
 out of tree modules that don't depend on any mojo libraries. It also makes it
 easier to use the interface and implementation in external code(ARDOUR)
 
+Change module install path to be in /lib/$PRODUCT_EXE_NAME directory and not in
+/bin
+
 remove get suffix from all AudioDevice methods as there is no set
 
 Add AudioDevice::open without input/output/samplerate parameters that just
@@ -276,6 +279,8 @@ Build Dummy/Skeleton module for each interface type that doesn't link to
 mojo-core to test that module implementations aren't required to link to
 mojo-core. mojo-core.hpp will be included by all modules for at least
 mojo::Module but it should only need type definitions in headers etc.
+
+Add TestModule implementation for each interface/module type
 
 Audio/Processor module
 
@@ -328,7 +333,8 @@ already been called) and returns a pointer to it, also add a mojo_module_fini
 
 should be able to have built in modules aswell as external modules
 
-libmojo must expose a way to discover new modules
+libmojo must expose a way to discover/refresh new modules installed while
+application is running
 
 modules should only have to link to a small core library if at all
 
@@ -340,6 +346,9 @@ to? possibly in libgleam
 rename mojo/tests/test_log to test_logging
 
 Add function to mojo/test_common.hpp to get a test::tmp_i18n_writable_directory
+
+Use better names for BUILD_SINGLE_TESTS and MOJO_SINGLE_TEST_EXE to avoid
+confusion
 
 Tests should try to provide full coverage of API
 
