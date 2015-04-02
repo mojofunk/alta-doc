@@ -237,23 +237,78 @@ names?
 
 ## Modules
 
-Make a generic module infrastructure for libmojo, modules may include
+DONE - Make a generic module infrastructure for libmojo
 
-If for instance AudioDriverModule returned an AudioDriver rather than an
-AudioDevice the audio_driver would not need to depend on core. Perhaps it would
-be better restrict interfaces so that they don't require any external libs.
-This suggests it better to use std::string for path strings everywhere and just
-assume/enforce? it is UTF-8 encoded and modules need to manage encoding
-conversion internally if using platform API's that require a different
-encoding/wide strings etc.
 
 Modules are located in there own directory and should not have to depend on any
 other library but in practice will depend on mojo-core. This allows would allow
 out of tree modules that don't depend on any mojo libraries. It also makes it
 easier to use the interface and implementation in external code(ARDOUR)
 
+Restrict interfaces definitions so that they don't require any external libs
+and only use builtin types.  This suggests it better to use std::string for
+path strings everywhere and just assume/enforce? it is UTF-8 encoded and
+modules need to manage encoding conversion internally if using platform API's
+that require a different encoding/wide strings etc.
+
 Change module install path to be in /lib/$PRODUCT_EXE_NAME directory and not in
 /bin
+
+Try having only one instance of a Module class per module, change the module
+function to mojo_module_init () that allocates Module class(if init hasn't
+already been called) and returns a pointer to it, also add a mojo_module_fini
+() function to deallocate any resources allocated by init for proper shutdown.
+
+should be able to have built in modules aswell as external modules
+
+libmojo must expose a way to discover/refresh new modules installed while
+application is running
+
+modules should only have to link to a small core library if at all
+
+Should all platform dependent code be in a base library which modules can link
+to? possibly in libgleam
+
+Build Dummy/Skeleton module for each interface type that doesn't link to
+mojo-core to test that module implementations aren't required to link to
+mojo-core. mojo-core.hpp will be included by all modules for at least
+mojo::Module but it should only need type definitions in headers etc.
+
+Add TestModule implementation for each interface/module type
+
+### Audio/Processor module
+
+### PannerModule
+
+### AudioFileModule
+
+- SndfileAudioFileModule
+- CoreaudioAudioFileModule
+- MadAudioFileModule
+
+### MidiFileModule
+
+- SMFMidiModule
+
+### AudioEffectModule
+
+- LADSPAEffectModule
+- LV2EffectModule
+- VSTEffectModule
+- DXEffectModule
+
+### InstrumentModule
+
+- VSTInstrumentModule
+- DXInstrumentModule
+
+### AudioDriverModules
+
+- JACKAudioDriverModule
+- ALSAAudioDriverModule
+- PulseAudioDriverModule
+- PortAudioDriverModule
+- VSTAudioDriverModule
 
 remove get suffix from all AudioDevice methods as there is no set
 
@@ -274,72 +329,26 @@ Add stop/close_devices method to AudioDriver and call on AudioDriver dtor?
 Add AudioDriver::get_default_input_device
 
 Add AudioDriver::get_default_output_device
-
-Build Dummy/Skeleton module for each interface type that doesn't link to
-mojo-core to test that module implementations aren't required to link to
-mojo-core. mojo-core.hpp will be included by all modules for at least
-mojo::Module but it should only need type definitions in headers etc.
-
-Add TestModule implementation for each interface/module type
-
-Audio/Processor module
-
-PannerModule
-
-AudioFileModule:
-- SndfileAudioFileModule
-- CoreaudioAudioFileModule
-- MadAudioFileModule
-
-MidiFileModule:
-- SMFMidiModule
-
-AudioEffectModule:
-- LADSPAEffectModule
-- LV2EffectModule
-- VSTEffectModule
-- DXEffectModule
-
-InstrumentModule:
-- VSTInstrumentModule
-- DXInstrumentModule
-
 AudioDriverModule:
-- JACKAudioDriverModule
-- ALSAAudioDriverModule
-- PulseAudioDriverModule
-- PortAudioDriverModule
-- VSTAudioDriverModule
 
-MIDIDriverModule:
+### MIDIDriverModule
+
 - PortMIDIDriverModule
 
-AudioResamplerModule:
+### AudioResamplerModule
+
 - SRCResamplerModule
 - SpeexResamplerModule
 
-ProjectImportModule
+### ProjectImportModule
+
 - ArdourImportModule
 - AAFImportModule
 
-ProjectExportModule
+### ProjectExportModule
+
 - ArdourExportModule
 - AAFExportModule
-
-Try having only one instance of a Module class per module, change the module
-function to mojo_module_init () that allocates Module class(if init hasn't
-already been called) and returns a pointer to it, also add a mojo_module_fini
-() function to deallocate any resources allocated by init for proper shutdown.
-
-should be able to have built in modules aswell as external modules
-
-libmojo must expose a way to discover/refresh new modules installed while
-application is running
-
-modules should only have to link to a small core library if at all
-
-Should all platform dependent code be in a base library which modules can link
-to? possibly in libgleam
 
 ## Tests
 
