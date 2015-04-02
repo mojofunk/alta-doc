@@ -350,6 +350,9 @@ Add function to mojo/test_common.hpp to get a test::tmp_i18n_writable_directory
 Use better names for BUILD_SINGLE_TESTS and MOJO_SINGLE_TEST_EXE to avoid
 confusion
 
+Use wscript test section from portaudio waf branch to generate tests without
+having to have a test file list
+
 Tests should try to provide full coverage of API
 
 Add option to use gcov
