@@ -239,7 +239,6 @@ names?
 
 DONE - Make a generic module infrastructure for libmojo
 
-
 Modules are located in there own directory and should not have to depend on any
 other library but in practice will depend on mojo-core. This allows would allow
 out of tree modules that don't depend on any mojo libraries. It also makes it
@@ -330,6 +329,13 @@ Add AudioDriver::get_default_input_device
 
 Add AudioDriver::get_default_output_device
 AudioDriverModule:
+
+portaudio returns half duplex devices for WMME, DirectX and WDMKS host api's
+ASIO does return full duplex devices. When opening a stream in portaudio a
+different input and output device parameter can be specified. but to open a device in full
+duplex mode the AudioDevice interface will have to change to open via a stream
+class or perhaps discovering which input and output device id's refer to the
+same device so AudioDevice represents only a full duplex device.
 
 ### MIDIDriverModule
 
