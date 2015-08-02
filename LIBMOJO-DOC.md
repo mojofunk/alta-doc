@@ -39,7 +39,7 @@ constructible.
 
 Each class defines ## Threads
 
-## Mojules
+## Modules
 
 ## System
 
@@ -57,3 +57,26 @@ filesystem, resource management
 ## In Memory Project Format
 
 ## Task based Interface
+
+## Engine
+
+The Engine is a reusable component that brings together data from devices and
+the application and the data is processed according to an acyclic
+graph which will be called a Pipeline.
+
+The Engine has a Pipeline and a ClockSource
+
+A Pipeline could be used outside of engine context, put in separate component?
+(e.g A Track will probably have an internal Pipeline)
+
+A Pipeline has a number of Elements and Connections
+
+An Element has a number of Ports
+
+A Port is a connection point and has a type, and Buffer?
+
+The Engine should not depend on specific data types ports should have a URI
+like scheme to indicate data type.
+
+The Engine cycle is triggered externally by a clock source such as from the
+audio device.

@@ -17,3 +17,5 @@ for alta
 sudo yum install portaudio-devel
 
 sudo yum install portmidi-devel
+
+sudo yum install clang

@@ -1,4 +1,11 @@
-# User Interface
+# User Interface Goals
+
+Open/Display/Play an audio file
+
+Open/Display/Play a MIDI file
+
+
+# User Interface Implementation
 
 ui::Application inherits from Gtk::Application or stick to composition?
 

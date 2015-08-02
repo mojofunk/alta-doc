@@ -45,10 +45,14 @@ Replace pointer typedefs with c++11 using keyword
 
 ## Glib
 
+Don't expose Glib in mojo headers
+
 depend on glib for filesystem stuff? or convert between native paths and utf-8?
 or use boost and install UTF-8 as default global encoding for narrow API?
 
 ## Boost libs
+
+Don't expose boost in mojo headers
 
 Use boost::filesystem?
 
@@ -85,7 +89,11 @@ DONE - add get_common_samplerates to core/audio/utils.hpp
 
 define monotonic_time_t?
 
+move core/time into core/system/
+
 move filesystem/* to system/* ?
+
+
 
 Add mojo::debug::init/deinit? issue with static initialization order and
 MOJO_DEBUG_DOMAIN macro
@@ -132,6 +140,7 @@ http://stackoverflow.com/questions/17333/most-effective-way-for-float-and-double
 
 Add unique_ptr wrappers for std::FILE handles ref:
 http://codereview.stackexchange.com/questions/4679/shared-ptr-and-file-for-wrapping-cstdio-update-also-dlfcn-h
+
 ## Project class
 
 Should only be one method to add and remove tracks?
@@ -170,18 +179,25 @@ There are two options: A pointer to a class instance could be passed to the
 signal connection interface so that when a signal is emitted it can be emitted
 in the context that has been registered.
 
-This has the advantage in that 
+This has the disadvantage that a pointer has to be stored which would increase
+memory usage. Might not matter but it depends how many signals/listeners etc.
 
 The signal could be emitted in two ways, either syncronously(sync) or
 asyncronously(async). If it is emitted in sync it means that the callback must
 complete(in another thread/context) before returning to the current execution
-context/thread.  
+context/thread.
 
 ### Option 2: signal handler determines Context to process signal
 
-Some signals such as those that call for a dropping of any references when a
-class instance is destroyed are required to be emitted syncronously which means
-that...
+The other option is to just pass in a normal function
+pointer/lambda/std::function object and then when the callback/function is
+executed the handler calls the appropriate context with either sync/async
+depending on the requirements of the callback.
+
+This means that it is the responsibility of the handler to get the sync/async
+semantics correct. If the object that emits the signal expects all references
+to be dropped and that the handler called syncronously but the handler doesn't
+then there may be a issue.
 
 Object
  - SignalConnectionUP connect_specific_signal (context, std::function<type>)
@@ -203,8 +219,14 @@ How should references to mojo:: Objects be exposed?
 
 ## Misc
 
+DONE - Use MOJO_AMALGAMATED define throughout mojo lib instead of
+MOJO_CORE_AMALGAMATED, MOJO_APPLICATION_AMALGAMATED etc
+
 Implement checks for memory allocations in RT threads via operator new/malloc
 etc Aim for an API with no raw pointers?
+
+Rename mojo::Library to mojo::DynamicLibrary and have it as a final class that
+has a glib implementation
 
 rename typedef.h headers to types.h
 
@@ -215,11 +237,6 @@ Session be a singleton or should we allow several Sessions to exist in the same
 Process?
 
 Prevent any mojo headers being included directly? Only include mojo.hpp?
-
-Move GlibLibrary functionality to libgleam?
-
-Move all glib dependent code to libgleam? but don't expose dependence via
-libmojo
 
 Add ardour/jack_utils code to JackAudioDriverModule to get devices
 
@@ -238,6 +255,12 @@ names?
 ## Modules
 
 DONE - Make a generic module infrastructure for libmojo
+
+Add --no-modules build option to build without any external library
+dependencies
+
+Add mojo-interfaces library that amalgamates all the interfaces into one
+module
 
 Modules are located in there own directory and should not have to depend on any
 other library but in practice will depend on mojo-core. This allows would allow
@@ -337,9 +360,16 @@ duplex mode the AudioDevice interface will have to change to open via a stream
 class or perhaps discovering which input and output device id's refer to the
 same device so AudioDevice represents only a full duplex device.
 
+Make portaudio audio driver optional
+
+Test for sndfile library in sndfile module
+
+Use consistent module file/target names
+
 ### MIDIDriverModule
 
 - PortMIDIDriverModule
+- WinMMEDriverModule
 
 ### AudioResamplerModule
 
@@ -357,6 +387,11 @@ same device so AudioDevice represents only a full duplex device.
 - AAFExportModule
 
 ## Tests
+
+Tests need to be run for debug and release builds
+
+Should tests be located in same directory(or tests subdir) as code or even same
+file as code?
 
 rename mojo/tests/test_log to test_logging
 
@@ -423,7 +458,7 @@ The later may be slightly slower due to branching.
 
 conversion to/from ltc/vitc/mtc.
 
-# RT Graph
+# RT Graph / Engine
 
 The graph must be directed and acyclic
 
@@ -441,19 +476,20 @@ A source node is a node with no incoming edges
 
 A sink node is a node with no outgoing edges
 
-A processing node is a node with incoming and outgoing edges
-
 Must be able to add and remove edges, although not while processing graph.
 
 The source nodes in the graph are processed first as they are the source of the
 data and the edges are followed to process the rest of the nodes.
 
-The graph must be able to be processed in parallel.
+The graph must be able to be processed in parallel(multiple threads).
 
 Would breadth first processing be more cache friendly?
 
 The API must expose a way to set how many threads are used to process the
 graph. or leave threading out of the lib?
+
+Graph processing threads may need to be created with a priority relative to other
+threads in the process so thread creation may need to be delegated.
 
 get_max_thread_count
 
@@ -482,7 +518,7 @@ waiting for the ApplicationWorker to finish then there is a deadlock?
 If when the last project is removed can App::quit be called in an idle
 callback.
 
-Move public headers into directory structure that mirrors what would be if the
+DONE - Move public headers into directory structure that mirrors what would be if the
 headers were installed. Instead of include <mojo/mojo.hpp> perhaps it should be
 include <mojo.hpp> and include <mojo/project.hpp> ertc
 
@@ -491,19 +527,26 @@ include <mojo.hpp> and include <mojo/project.hpp> ertc
 Need simple debug library for logging messages.
 - only compiled in debug mode?
 - M_DEBUG_ASSERT
-- M_DEBUG_MSG just takes a string
+- rename MOJO_DEBUG_MSG to M_DEBUG_LOG
 - MOJO_DEBUG_DOMAIN has problem with amalgamation if used in multiple source
   files with the same DEBUG domain name as it will cause double definition of
-  variable.
+  variable. This could be solved by defining all debug domains in one source
+  file and then including this first in
+  common_source_includes.hpp or mojo-core.cpp that way all source files have
+  access to all debug domains and aren't limited to only those declared in the
+  source file.
 - records line and file
 - filters?
 - optional namespace?
 - command line args?
 - MOJO_DEBUG env var
 - header only?
-- Debugging and logging separate API
+- Debugging and logging separate API?
 - per thread logging streams?
-- logging lib
+- logging lib?
+- dedicated logging thread? or just application thread pool
+- RT safe logging facility, M_DEBUG_RT_LOG or just use M_DEBUG_LOG, look up
+  thread and use appropriate message passing based on thread type.
 
 waf test target build a single test executable
 

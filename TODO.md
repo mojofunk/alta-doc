@@ -13,6 +13,11 @@ Add client side pre-commit hook to check for wscript formatting
 
 # Build System
 
+Reuse the ardour-build.sh script for alta
+
+change mingw-pkg alta package to build and rsync or perhaps use alta-build.sh
+and specify export ALTA_BUILD_DIR = MINGW_PKG_BUILD_DIR or whatever it will be
+
 DONE - Automatic formatting of python code
 
 make each sub wscript standalone
@@ -22,6 +27,11 @@ DONE - Add script to check source with the clang scan-build tool
 Add --with-docs build option to build doxygen based docs
 
 Add test target?
+
+config scripts in tools/linux really aren't linux specific and should be able
+to be utilized by buildbot/CI on all platforms. So put them in new location etc
+
+make amalgamation the only way to build?
 
 # Libgleam
 
