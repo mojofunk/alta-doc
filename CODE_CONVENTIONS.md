@@ -44,9 +44,17 @@ use underscores between words.
 
 When calling a function there should not be a single space between the
 function or method name and the starting bracket. This looks strange when you
-are calling a method on an object that is returned from a method
-`like ().get_some_spaces ()`. It is somewhat more readable at times but it also
-uses more space.
+are calling a method on an object that is returned from a method.
+
+```c++
+project ().get_directory ().root_path ();
+
+// as opposed to
+
+project().get_directory().root_path();
+```
+
+It can is somewhat more readable at times but it also uses more space.
 
 ## Constructor Initialization List
 
@@ -57,11 +65,11 @@ removing a class member will only cause a one line change. The source code
 formatter may do this automatically.
 
 ```c++
-	Foo::Foo ()
-		: m_one(1)
-		, m_two(2)
-		, m_three(3)
-	{ }
+Foo::Foo ()
+	: m_one(1)
+	, m_two(2)
+	, m_three(3)
+{ }
 ```
 ## Header Include Guards
 
