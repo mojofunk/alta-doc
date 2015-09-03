@@ -64,6 +64,18 @@ use mojo::any alias for any boost classes so reimplementation etc is easier
 
 ## Core
 
+Add single header and multiple implementation files and then select which will
+be used/compiled at build time based on platform/options
+
+data type converter int/float/etc implementation
+
+AudioData class to hold audio data with specializations for data type/format
+and channels etc. functions for accelerated de/interleaving etc
+
+Add functions/class for swapping byte order
+
+dither interface/implementation
+
 Add unique pointer typedefs to mojo/typesystem/smart_pointer_macros.hpp
 
 Make DebugRegistry thread safe
@@ -74,6 +86,8 @@ Add Thread debug data to MOJO_DEBUG
 
 Add Quark implementation or properly wrap glib impl so glib types are not
 exposed
+
+Add some form of class instance leak detector
 
 Add log levels? get/set log handlers? for GUI display etc
 
@@ -91,9 +105,13 @@ define monotonic_time_t?
 
 move core/time into core/system/
 
-move filesystem/* to system/* ?
+move filesystem/* to system/* or files/ ?
 
+SystemInfo class like chromium with static methods? cross over with resource.hpp
 
+Environment class with static methods?
+
+CpuInfo class
 
 Add mojo::debug::init/deinit? issue with static initialization order and
 MOJO_DEBUG_DOMAIN macro
@@ -110,9 +128,12 @@ register them automatically in typesystem
 
 Implement custom any type for TypeSystem?
 
-Add version of mojo::to_string that returns string not bool
+Done - Add version of mojo::to_string that returns string not bool
 
-Add Context Interface to core
+Copy string_convert.h and tests back from libpbd when finished/merged/not
+merged/etc
+
+Add Context Interface to core?
 
 Remove boost lib dependencies if possible or at least publicly exposed deps
 
@@ -132,7 +153,7 @@ schedule changes, rather than explicit locking? needs further thought
 mojo could offer a way to register a Context with a thread so that when
 registering
 
-Add mojo::aligned_alloc
+Add mojo::aligned_alloc to core/memory/alloc.hpp?
 
 Add float/double comparison to mojo/core/math.hpp with tests ref:
 http://www.cygnus-software.com/papers/comparingfloats/comparingfloats.htm ref:
@@ -260,7 +281,7 @@ Add --no-modules build option to build without any external library
 dependencies
 
 Add mojo-interfaces library that amalgamates all the interfaces into one
-module
+module?
 
 Modules are located in there own directory and should not have to depend on any
 other library but in practice will depend on mojo-core. This allows would allow
@@ -385,67 +406,6 @@ Use consistent module file/target names
 
 - ArdourExportModule
 - AAFExportModule
-
-## Tests
-
-Tests need to be run for debug and release builds
-
-Should tests be located in same directory(or tests subdir) as code or even same
-file as code?
-
-rename mojo/tests/test_log to test_logging
-
-Add function to mojo/test_common.hpp to get a test::tmp_i18n_writable_directory
-
-Use better names for BUILD_SINGLE_TESTS and MOJO_SINGLE_TEST_EXE to avoid
-confusion
-
-Use wscript test section from portaudio waf branch to generate tests without
-having to have a test file list
-
-Tests should try to provide full coverage of API
-
-Add option to use gcov
-
-Test that checks visibility
-
-Write test output to a temp directory
-
-Thorough testing of mojo::Typesystem is needed
-
-Add init/deinit static functions to all "Singleton" classes
-
-All tests should also test that undo/redo work properly. one way to do that
-would be to make a copy of an object then change it, check for inequality then
-call undo and check for equality. also copy the changed state(before undo) ,
-call redo and check for equality
-
-Create a complex new project using all data types, save, close and restore.
-
-char encoding tests etc
-
-test source code doc coverage
-
-Event
-
-- split events in a Sequence
-- nudge forward events
-- nudge backward events
-
-Sequence
-
-Test for Audio device sync/xrun at different settings with simulated load
-
-Test for disk/storage read and write speed
-
-Test for ability to write large files(> 4Gb)
-
-Change string_convert test so that it changes locale and tests that there is no
-effect on conversion
-
-Write a TestAudioDevice that generates different test tones etc
-
-Write a TestMIDIDevice that generates different MIDI event messages etc
 
 # SMPTE
 

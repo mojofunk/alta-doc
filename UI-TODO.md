@@ -48,3 +48,9 @@ Gtk+ Positives:
 Gtk+ Negatives:
 - Fast moving API? deprecations etc
 - Cross platform support seems poor
+
+# Other UI Toolkit options
+
+QT
+Chromium
+Native/Custom
