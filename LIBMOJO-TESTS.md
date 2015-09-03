@@ -1,5 +1,7 @@
 # libmojo Tests TODO
 
+Add automated test executions for all compilers/platforms/build combinations
+
 Fix tests as Boost.Test is not thread safe
 
 Add more test strings for test_string_convert
@@ -21,6 +23,9 @@ confusion
 
 Use wscript test section from portaudio waf branch to generate tests without
 having to have a test file list
+
+Add test to save project/state async while performing random operations to
+check for race conditions/locking/MT safe etc
 
 Tests should try to provide full coverage of API
 
