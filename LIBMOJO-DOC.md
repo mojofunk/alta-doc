@@ -10,6 +10,24 @@ implementations of interfaces defined in mojo/interaces.
 libmojo intends to directly depend on as few libraries as possible and if
 possible not expose any library dependencies to client code.
 
+## Library dependencies
+
+# Boost
+
+Exposed in headers for sys::path and boost::any but possibly using alias in
+case we want to reimplement those in the future(I hope not)
+
+For filesystem and possibly file streams at some point.
+
+# Glib
+
+Not exposed in the headers
+
+For cross platform module/library stuff, although that should be fairly
+straight forward to reimplement.
+
+For character encoding conversion?
+
 ## Amalgamation
 
 Amalgamation is where compilation units are concatenated into a single file and
