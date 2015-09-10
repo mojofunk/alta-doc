@@ -40,7 +40,9 @@ Each C++ class is defined in header file and a single source file. A C++ header
 file must use the hpp extension and the source file must use the cpp extension.
 
 The name of the source file should be the class name in lower case and
-use underscores between words.
+use underscores between words. The name of the files do not need prefixing with
+the library or namespace name as any public headers will be located in a
+subdirectory in the include path.
 
 When calling a function there should not be a single space between the
 function or method name and the starting bracket. This looks strange when you
@@ -77,9 +79,9 @@ Header include guards are used to ensure that a header file is not included
 more than once from a source file. The names used for the guards should be
 uppercase with words separated by underscores followed by a `_H` postfix.
 
-The guard name used is determined by the class name so for example if the class
-name was Polygon in the Geom library then the guard name would be the
-following:
+The guard name used is determined by the namespace name and class name so for
+example if the class name was Polygon in the geom namespace then the guard name
+would be the following:
 
 ```c++
 #ifndef GEOM_POLYGON_H
