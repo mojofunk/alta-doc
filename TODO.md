@@ -28,6 +28,11 @@ Add --with-docs build option to build doxygen based docs
 
 Add test target?
 
+Use only one top level wscript file?
+
+Use compiler flags dictionary in wscript and don't assume compiler. Add a way
+to specify toolset auto/gcc/clang/msvc
+
 Add test running scripts that don't run under valgrind as it is very slow
 
 config scripts in tools/linux really aren't linux specific and should be able

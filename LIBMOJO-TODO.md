@@ -8,13 +8,6 @@ Be able to build static binary with all modules built in. How will this affect
 licensing? It won't as all non-GPL licensed code will remain in modules and
 module API is appropriately licenced.
 
-Use only one top level wscript file?
-
-Use compiler flags dictionary in wscript and don't assume compiler. Add a way
-to specify toolset auto/gcc/clang/msvc
-
-Add option to compile with clang on linux
-
 ## Directory Structure
 
 ## C++11
@@ -64,6 +57,17 @@ use mojo::any alias for any boost classes so reimplementation etc is easier
 
 ## Core
 
+FilePath/filesystem::Path class instead of boost::filesystem::path?
+benefit/cost. It would just be a simple class with is_utf8/16_encoded with
+str() method to get a std::string. Then we can use external API for conversion
+etc, or we could just use std::string for simplicity
+
+Define NO_EXCEPT or just use noexcept? no need for compat with cpp03
+
+Define MOJO_DECLARE_NON_COPYABLE
+
+Rename DEFINE_ALL_TYPEDEFS to DEFINE_ALL_ALIASES
+
 Add single header and multiple implementation files and then select which will
 be used/compiled at build time based on platform/options
 
@@ -80,19 +84,13 @@ Add unique pointer typedefs to mojo/typesystem/smart_pointer_macros.hpp
 
 Make DebugRegistry thread safe
 
-Add Timing data logging to MOJO_DEBUG
-
 Add Thread debug data to MOJO_DEBUG
 
 Add Quark implementation or properly wrap glib impl so glib types are not
 exposed
 
-Add some form of class instance leak detector
-
-Add log levels? get/set log handlers? for GUI display etc
-
-Add threads.hpp to register thread names/memory pools for at least debugging
-etc?
+Add core/system/threads.hpp to register thread names/memory pools for at least
+debugging etc?
 
 All methods are sync unless a "async" suffix is appended to the function/method
 name
@@ -130,8 +128,12 @@ Implement custom any type for TypeSystem?
 
 Done - Add version of mojo::to_string that returns string not bool
 
-Copy string_convert.h and tests back from libpbd when finished/merged/not
+Done - Copy string_convert.h and tests back from libpbd when finished/merged/not
 merged/etc
+
+Copy pbd/windows_timer_utils.h back into mojo/core/native
+
+Copy pbd/windows_mmcss.h back into mojo/core/native
 
 Add Context Interface to core?
 
@@ -152,8 +154,6 @@ schedule changes, rather than explicit locking? needs further thought
 
 mojo could offer a way to register a Context with a thread so that when
 registering
-
-Add mojo::aligned_alloc to core/memory/alloc.hpp?
 
 Add float/double comparison to mojo/core/math.hpp with tests ref:
 http://www.cygnus-software.com/papers/comparingfloats/comparingfloats.htm ref:
@@ -230,21 +230,10 @@ Context class
 
 Signal class list of Callbacks
 
-## Memory Management
-
-How should references to mojo:: Objects be exposed?
-- via raw pointers
-- via weak_ptr
-- create via factory returning unique_ptr and then manage in libmojo internally
-  and expose raw pointers
-
 ## Misc
 
 DONE - Use MOJO_AMALGAMATED define throughout mojo lib instead of
 MOJO_CORE_AMALGAMATED, MOJO_APPLICATION_AMALGAMATED etc
-
-Implement checks for memory allocations in RT threads via operator new/malloc
-etc Aim for an API with no raw pointers?
 
 Rename mojo::Library to mojo::DynamicLibrary and have it as a final class that
 has a glib implementation
@@ -265,8 +254,6 @@ Merge Worker/ApplicationWorker with gleam::dispatcher?
 
 Rename ApplicationWorker FunctorDispatcher and inherit from
 gleam::ManualDispatcher?
-
-include facility for startup messages during initialization? using mojo::log
 
 ## Portaudio Module
 
@@ -464,7 +451,7 @@ The test suite must be able to measure thread context switching time.
 The test suite must be able to test the effect cache size has on processing
 performance.
 
-[ Application API ]
+# Application API
 
 Application API should use method names like transport_* track_* project_* etc
 
@@ -482,11 +469,56 @@ DONE - Move public headers into directory structure that mirrors what would be i
 headers were installed. Instead of include <mojo/mojo.hpp> perhaps it should be
 include <mojo.hpp> and include <mojo/project.hpp> ertc
 
-## Debug Macros
+## Memory
+
+Add some form of class instance leak detector
+
+Add compile time define to enable process wide allocation checking via global
+new/delete operators?
+
+Add interface to allocators to check that no allocations have occurred between
+calls of begin_check/end_check or some similar interface
+
+mojo::MTPoolAllocator
+
+mojo::STPoolAllocator, enable checks that only a single thread uses the
+allocator
+
+Add mojo::aligned_alloc to core/memory/alloc.hpp?
+
+How should references to mojo:: Objects be exposed?
+- via raw pointers
+- via weak_ptr
+- create via factory returning unique_ptr and then manage in libmojo internally
+  and expose raw pointers
+
+## Misc
+
+Use boost::lockfree::queue in FunctorDispatcher
+
+
+Move WorkerThread from ApplicationData into core/misc
+
+Test for Worker, FunctorDispatcher and WorkerThread
+
+## Logging/Debug Macros
+
+rename mojo/core/logging/ mojo/core/log?
+
+Add Timing data logging to MOJO_DEBUG
+
+Add log levels? get/set log handlers? for GUI display etc
+
+Use mojo::log for startup messages during initialization?
 
 Need simple debug library for logging messages.
-- only compiled in debug mode?
-- M_DEBUG_ASSERT
+- Rename DebugRegistry mojo::LogDomainRegistry
+- Change MOJO_DEBUG_DOMAIN to MOJO_DEFINE_LOG_DOMAIN that takes a logging
+  domain name and defines a specific macro for that domain like
+  MOJO_LOG_MMCSS("etc etc") instead of MOJO_LOG (MMCSS, "etc etc")? nah
+- Rename MOJO_DEBUG to MOJO_LOG
+- add mojo/core/logging/log_domains.hpp to expose log domains
+- Add MOJO_ASSERT
 - rename MOJO_DEBUG_MSG to M_DEBUG_LOG
 - MOJO_DEBUG_DOMAIN has problem with amalgamation if used in multiple source
   files with the same DEBUG domain name as it will cause double definition of
@@ -495,16 +527,18 @@ Need simple debug library for logging messages.
   common_source_includes.hpp or mojo-core.cpp that way all source files have
   access to all debug domains and aren't limited to only those declared in the
   source file.
-- records line and file
+- records line and file and time
 - filters?
 - optional namespace?
 - command line args?
 - MOJO_DEBUG env var
 - header only?
 - Debugging and logging separate API?
-- per thread logging streams?
+- use boost::lockfree::queue in logging library to send messages
+- have a logging thread that emits callbacks/processes messages
+- have log_compose template function that uses a pool based allocator for log
+  messages/strings
 - logging lib?
-- dedicated logging thread? or just application thread pool
 - RT safe logging facility, M_DEBUG_RT_LOG or just use M_DEBUG_LOG, look up
   thread and use appropriate message passing based on thread type.
 

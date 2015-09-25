@@ -1,10 +1,20 @@
 # libmojo Tests TODO
 
-Add automated test executions for all compilers/platforms/build combinations
+Add automated test executions for all compilers/platforms/build combinations,
+run tests from alta-build
 
 Fix tests as Boost.Test is not thread safe
 
+test boost lockfree queue, spsc_queue, stack
+
 Add more test strings for test_string_convert
+
+Run string conversion tests in a random number of locales
+
+Have the ability to run tests either on idle or in a different thread in the
+application. This would be to check thread safety and any possible interactions
+between libmojo code and the GUI that can only be tested by running them at the
+same time.
 
 Add functions to string/convert.hpp to set throw on parsing error or unexpected
 input and also log errors
@@ -64,7 +74,7 @@ Test for disk/storage read and write speed
 
 Test for ability to write large files(> 4Gb)
 
-Change string_convert test so that it changes locale and tests that there is no
+Done - Change string_convert test so that it changes locale and tests that there is no
 effect on conversion
 
 Write a TestAudioDevice that generates different test tones etc

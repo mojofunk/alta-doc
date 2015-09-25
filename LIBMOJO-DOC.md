@@ -4,13 +4,27 @@ The mojo library is the top level library on top of which a User Interface is
 built.
 
 libmojo should have as few direct link time library dependencies as possible
-with most functionality implemented in mojules(modules) that contain
-implementations of interfaces defined in mojo/interaces.
+with most functionality implemented in modules that contain implementations of
+interfaces defined in mojo/interaces.
 
 libmojo intends to directly depend on as few libraries as possible and if
 possible not expose any library dependencies to client code.
 
+libmojo is written in C++14 but uses a minimal set of language features, which
+should be outlined at some point.
+
 ## Library dependencies
+
+There is a compilication with depending on c++ libraries in that if we want to
+test and use several compilers then pretty much all c++ code has to be compiled
+with the same compiler we are using for the whole stack. It is somewhat
+possible apparently to mix c++ libraries compiled with clang and gcc but it
+probably just isn't worth the risk. This would suggest importing any c++
+libraries we want to use into the source tree, or only depending on external C
+based libraries. Neither option is appealing.
+
+I think the best option is to only support a single compiler per platform and
+ensure the whole stack is built with it.
 
 # Boost
 
@@ -18,6 +32,8 @@ Exposed in headers for sys::path and boost::any but possibly using alias in
 case we want to reimplement those in the future(I hope not)
 
 For filesystem and possibly file streams at some point.
+
+For Lock free lib, FIFO, Stack(memory alloc?)
 
 # Glib
 
@@ -27,6 +43,10 @@ For cross platform module/library stuff, although that should be fairly
 straight forward to reimplement.
 
 For character encoding conversion?
+
+## Exceptions
+
+Use noexcept everywhere possible
 
 ## Amalgamation
 
@@ -50,8 +70,8 @@ The type system is used to map types to names.
 
 ## Object class
 
-All classes deriving from mojo::Object are required to be default
-constructible.
+All classes deriving from mojo::Object are required to be non-copyable and
+default constructible(can we enforce this)?
 
 ## Event Callbacks
 

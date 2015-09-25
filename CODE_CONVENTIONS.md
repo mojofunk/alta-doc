@@ -107,3 +107,12 @@ Member variables are prefixed by `m_`, so for instance `name` would become
 `m_name`.
 
 Static member variables are prefixed by `s_`.
+
+## Control Structures
+
+see the [Mozilla Code Style Guide](http://developer.mozilla.org/en-US/docs/Mozilla/Developer_guide/Coding_Style)
+
+## Anonymous Namespaces
+
+see the [Mozilla Code Style Guide](http://developer.mozilla.org/en-US/docs/Mozilla/Developer_guide/Coding_Style)
+prefer use of static for now for compatability with debuggers
