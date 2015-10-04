@@ -36,6 +36,14 @@ use std:: random number generators
 
 Replace pointer typedefs with c++11 using keyword
 
+## Library dependencies
+
+Exposing std:: types in headers is ok, or types that are due for
+standardization like boost::filesystem::path.
+
+Library dependencies should not be exposed in the public headers like glib or
+boost. Any use should be wrapped in an implementation class or module/interface
+
 ## Glib
 
 Don't expose Glib in mojo headers
@@ -479,10 +487,8 @@ new/delete operators?
 Add interface to allocators to check that no allocations have occurred between
 calls of begin_check/end_check or some similar interface
 
-mojo::MTPoolAllocator
-
-mojo::STPoolAllocator, enable checks that only a single thread uses the
-allocator
+Move MemoryPool implementation out of header and make implementation of stack
+opaque so boost headers are an implementation detail.
 
 Add mojo::aligned_alloc to core/memory/alloc.hpp?
 
