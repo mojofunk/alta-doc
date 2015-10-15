@@ -260,6 +260,8 @@ Add ardour/jack_utils code to JackAudioDriverModule to get devices
 
 Merge Worker/ApplicationWorker with gleam::dispatcher?
 
+Rename Worker to Dispatcher
+
 Rename ApplicationWorker FunctorDispatcher and inherit from
 gleam::ManualDispatcher?
 
@@ -461,21 +463,21 @@ performance.
 
 # Application API
 
-Application API should use method names like transport_* track_* project_* etc
+Use `private_macros.hpp` in Application class and more all `*_internal` methods
+to the private class
 
 Application API should have a sync method for testing(at least)
 
-Should the mojo public API also be in C?
+Should the mojo public API also be in C? No
 
 If the ApplicationWorker is calling a sync function and the UI thread is
 waiting for the ApplicationWorker to finish then there is a deadlock?
 
-If when the last project is removed can App::quit be called in an idle
-callback.
-
 DONE - Move public headers into directory structure that mirrors what would be if the
 headers were installed. Instead of include <mojo/mojo.hpp> perhaps it should be
 include <mojo.hpp> and include <mojo/project.hpp> ertc
+
+Move Project classes into project directory
 
 ## Memory
 
@@ -498,6 +500,14 @@ How should references to mojo:: Objects be exposed?
 - create via factory returning unique_ptr and then manage in libmojo internally
   and expose raw pointers
 
+- A [StackAllocator](https://src.chromium.org/chrome/trunk/src/base/containers/stack_container.h)
+
+## lockfree
+
+Move Pool into lockfree directory
+
+Move RingBuffer class into lockfree directory
+
 ## Misc
 
 Use boost::lockfree::queue in FunctorDispatcher
@@ -517,14 +527,22 @@ Add log levels? get/set log handlers? for GUI display etc
 
 Use mojo::log for startup messages during initialization?
 
-Need simple debug library for logging messages.
+Add M_ASSERT macro
+
+Logging library requirements:
+
+- A compose template that only uses stack allocated memory
+- log messages are composed using memory from the stack and then copied to a string from a pool allocator before being pushed to a lockfree logging queue.
+- Don't expose any macros publicly, just the facilities to build them
+- Macro for logging execution time of a particular block..M_LOG_TIME_BLOCK(DOMAIN, MSG)
+  or just have it as part of `M_LOG` macro and be able to enable with define?
+- M_LOG_TIMER(DOMAIN, NAME), M_LOG_TIME_START(TIMER)/M_LOG_TIME_STOP(TIMER)
 - Rename DebugRegistry mojo::LogDomainRegistry
-- Change MOJO_DEBUG_DOMAIN to MOJO_DEFINE_LOG_DOMAIN that takes a logging
+- Change MOJO_DEBUG_DOMAIN to `M_LOG_DECLARE_DOMAIN` that takes a logging
   domain name and defines a specific macro for that domain like
-  MOJO_LOG_MMCSS("etc etc") instead of MOJO_LOG (MMCSS, "etc etc")? nah
-- Rename MOJO_DEBUG to MOJO_LOG
+  MOJO_LOG_MMCSS("etc etc") instead of M_LOG (MMCSS, "etc etc")? nah
+- Rename MOJO_DEBUG to M_LOG
 - add mojo/core/logging/log_domains.hpp to expose log domains
-- Add MOJO_ASSERT
 - rename MOJO_DEBUG_MSG to M_DEBUG_LOG
 - MOJO_DEBUG_DOMAIN has problem with amalgamation if used in multiple source
   files with the same DEBUG domain name as it will cause double definition of
@@ -542,11 +560,10 @@ Need simple debug library for logging messages.
 - Debugging and logging separate API?
 - use boost::lockfree::queue in logging library to send messages
 - have a logging thread that emits callbacks/processes messages
-- have log_compose template function that uses a pool based allocator for log
-  messages/strings
-- logging lib?
-- RT safe logging facility, M_DEBUG_RT_LOG or just use M_DEBUG_LOG, look up
-  thread and use appropriate message passing based on thread type.
+  messages/strings?
+- RT safe logging by default
+- log streams, send to file, pipes etc for remote viewing
+- log viewing
 
 waf test target build a single test executable
 
