@@ -23,6 +23,12 @@ Namespace identifiers should be a short and lower case. The name of
 the top level namespace of a library should be the same name as the
 library.
 
+## Nested Namespaces
+
+All public classes and symbols in a library should be in the top level
+namespace. Nested namespaces should be used for classes/types/functions that
+are internal to the library. 
+
 ## Namespace Indentation
 
 Classes inside namespaces should not use any indentation and the
@@ -93,7 +99,7 @@ would be the following:
 ## Typedefs
 
 Typedef statements should not use lower case letters with an underscore
-used for word separation with a postfix `_t` as this is reserved...
+used for word separation with a postfix `_type` as `_t` is reserved(ref?)
 
 ## Member Variable Names
 
@@ -116,3 +122,23 @@ see the [Mozilla Code Style Guide](http://developer.mozilla.org/en-US/docs/Mozil
 
 see the [Mozilla Code Style Guide](http://developer.mozilla.org/en-US/docs/Mozilla/Developer_guide/Coding_Style)
 prefer use of static for now for compatability with debuggers
+
+## Smart Pointers
+
+pass `shared_ptr` by const reference to avoid copying and better performance.
+
+http://herbsutter.com/2013/06/05/gotw-91-solution-smart-pointer-parameters/
+
+## Return Values
+
+If a function needs to indicate whether or not the call succeeded use a bool
+with true to indicate success and false failure.
+
+If a function needs to return an error code or some sort then define an enum
+and use it. Don't use integers as return values and in C++ code never use
+integers and 0 to indicate success. Returning 0 on success is common C
+convention and works fine in C code but when mixed with C++ it is confusing.
+
+## Use of goto
+
+There should not be a need to use goto at all in C++ code.
