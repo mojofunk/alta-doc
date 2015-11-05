@@ -1,5 +1,7 @@
 # libmojo Tests TODO
 
+Add ScopedTestDir to test utility classes
+
 Add automated test executions for all compilers/platforms/build combinations,
 run tests from alta-build
 

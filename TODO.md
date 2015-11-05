@@ -26,7 +26,7 @@ DONE - Add script to check source with the clang scan-build tool
 
 Add --with-docs build option to build doxygen based docs
 
-Add test target?
+DONE - Add test target
 
 Use only one top level wscript file?
 

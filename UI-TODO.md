@@ -21,29 +21,3 @@ Add Classes:
 - ProjectOverview
 
 Add WindowLayoutDialog and button to ProjectWindowToolbar
-
-# Gtk+
-
-What are the benefits/tradeoffs with using Gtk+ directly and removing
-dependency on gtkmm. Current UI(such that it is) uses gtkmm but with ui files
-and resources.
-
-Gtkmm Positives vs Gtk+:
-- C++ style API template based signals/events
-
-Gtkmm Negatives vs Gtk+:
-- More dependencies, makes MSVC build harder
-- Not as well tested API wise as Gtk+?
-- More overhead with wrapper/signal emission(possibly negligible)
-
-Gtk+ Positives:
-
-Gtk+ Negatives:
-- Fast moving API? deprecations etc
-- Cross platform support seems poor
-
-# Other UI Toolkit options
-
-QT
-Chromium
-Native/Custom

@@ -43,17 +43,19 @@ standardization like boost::filesystem::path.
 
 Library dependencies should not be exposed in the public headers like glib or
 boost. Any use should be wrapped in an implementation class or module/interface
+this will allow changing the implementation class or using a specific
+implementation/library etc on a certain platform or configuration
 
-## Glib
+### Glib
 
 Don't expose Glib in mojo headers
 
 depend on glib for filesystem stuff? or convert between native paths and utf-8?
 or use boost and install UTF-8 as default global encoding for narrow API?
 
-## Boost libs
+### Boost libs
 
-Don't expose boost in mojo headers
+Don't expose boost in mojo headers...eventually
 
 Use boost::filesystem?
 
@@ -63,7 +65,27 @@ Use boost::typeindex? in mojo/typesystem rather than std::type_info
 
 use mojo::any alias for any boost classes so reimplementation etc is easier
 
+### Juce libs
+
+The JUCE library can be used under the terms of the GPL so it makes sense to
+use it in some modules to avoid having to reimplement things like support
+for plugin API's and audio driver API's etc.
+
+Unlike Glib and Boost which are commonly distributed, it seems to make sense to
+include JUCE source code in the tree and compile it. The best way to do this
+would be to use submodule support of git.
+
+
 ## Core
+
+Containers? typedef common std:: container types like vector/list/map with a
+custom allocator?
+
+Add StackVector similar to chromium
+
+Add cppformat to core or add in external/submodules?
+
+Add pugixml to core or add in external/submodules?
 
 FilePath/filesystem::Path class instead of boost::filesystem::path?
 benefit/cost. It would just be a simple class with is_utf8/16_encoded with
@@ -75,6 +97,8 @@ Define NO_EXCEPT or just use noexcept? no need for compat with cpp03
 Define MOJO_DECLARE_NON_COPYABLE
 
 Rename DEFINE_ALL_TYPEDEFS to DEFINE_ALL_ALIASES
+
+Add positional arguments to mojo::compose
 
 Add single header and multiple implementation files and then select which will
 be used/compiled at build time based on platform/options
@@ -519,11 +543,11 @@ Test for Worker, FunctorDispatcher and WorkerThread
 
 ## Logging/Debug Macros
 
+Add log levels? get/set log handlers? for GUI display etc
+
 rename mojo/core/logging/ mojo/core/log?
 
 Add Timing data logging to MOJO_DEBUG
-
-Add log levels? get/set log handlers? for GUI display etc
 
 Use mojo::log for startup messages during initialization?
 
@@ -532,15 +556,16 @@ Add M_ASSERT macro
 Logging library requirements:
 
 - A compose template that only uses stack allocated memory
-- log messages are composed using memory from the stack and then copied to a string from a pool allocator before being pushed to a lockfree logging queue.
+- log messages are composed using memory from the stack and then copied to a
+  string from a pool allocator before being pushed to a lockfree logging queue.
 - Don't expose any macros publicly, just the facilities to build them
 - Macro for logging execution time of a particular block..M_LOG_TIME_BLOCK(DOMAIN, MSG)
   or just have it as part of `M_LOG` macro and be able to enable with define?
 - M_LOG_TIMER(DOMAIN, NAME), M_LOG_TIME_START(TIMER)/M_LOG_TIME_STOP(TIMER)
 - Rename DebugRegistry mojo::LogDomainRegistry
-- Change MOJO_DEBUG_DOMAIN to `M_LOG_DECLARE_DOMAIN` that takes a logging
-  domain name and defines a specific macro for that domain like
-  MOJO_LOG_MMCSS("etc etc") instead of M_LOG (MMCSS, "etc etc")? nah
+- Change MOJO_DEBUG_DOMAIN to `M_LOG_DECLARE_LOGGER` that defines a logger
+  with a name and defines a specific macro for that domain like
+  M_LOG_DECLARE_LOGGER(MMCSS) then using the logger via M_LOG_MMCSS("message")
 - Rename MOJO_DEBUG to M_LOG
 - add mojo/core/logging/log_domains.hpp to expose log domains
 - rename MOJO_DEBUG_MSG to M_DEBUG_LOG
@@ -564,6 +589,11 @@ Logging library requirements:
 - RT safe logging by default
 - log streams, send to file, pipes etc for remote viewing
 - log viewing
+- Rather than checking if a logging domain is active, each logging domain has a
+  pointer to a log instance. At library initialization time all the 'loggers'
+  are created and registered then a reference is used to log all messages.
+- filtering logging domains only at library initialization time is not
+  sufficient, filtering at runtime is necessary.
 
 waf test target build a single test executable
 
