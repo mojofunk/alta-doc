@@ -1,4 +1,4 @@
-# Code Conventions
+# Code Style Conventions
 
 ## Indentation and formatting
 
@@ -10,12 +10,17 @@ Tabs vs Spaces
 I don't think it matters so much and I have typically used tabs for indentation
 because of the projects I've been involved in. It is a trade off between being
 able to control the indentation to suit individual preference(tabs) vs strict
-formatting(spaces)
+formatting(spaces).
 
 I tend to think that all code should be able to fit in a 80 character wide
-terminal. It enforces/restricts the level of indentation and nested blocks
-which I think improves code quality. Using tabs in that instance is possible
-but means using 2 or 4 space tabs.
+terminal and all functions should be able to fit on a single page(wishful
+thinking perhaps), as it enforces/restricts the level of indentation and nested
+blocks which I think improves code quality.
+
+Using tabs with a line width restriction isn't really compatible as the whole
+purpose of using tabs over spaces is so that the code can be displayed to a
+users taste but unless the maximum line width is large then they are forced to
+use 2 or perhaps 4 space tabs anyway.
 
 ## Namespace Identifiers
 
@@ -27,7 +32,15 @@ library.
 
 All public classes and symbols in a library should be in the top level
 namespace. Nested namespaces should be used for classes/types/functions that
-are internal to the library. 
+are internal to the library.
+
+It is common for a large library collection that is divided into modules to
+have a top level namespace for the library and a nested namespace for each
+module. If there are two classes in two modules that seem like they should have
+the same name then use a different class name, even just prefixing the module
+name to the class name like `GraphicsPoint` and `TimePoint`(TODO think of a
+better example) rather than using nested namespaces as this leads to less
+confusion when discussing types and for documentation.
 
 ## Namespace Indentation
 
@@ -35,6 +48,13 @@ Classes inside namespaces should not use any indentation and the
 namespace name should be added in a single line comment after the
 closing bracket(on the same line). The source code formatter should take care
 of this.
+
+## Function Names
+
+Use verbs for functions and place verbs at the start of the function name as is
+the norm for transitive verbs in english. e.g. `create_object()` not
+`object_create()` etc. or `find_files_in_directory_matching()` not
+`matching_files_in_directory()`. TODO, think of some better examples.
 
 ## Class Names
 
@@ -107,12 +127,27 @@ Member variable and member function identifiers are all lower case letters. An
 underscore is used for word separation.
 
 Member variables should not be prefixed with and underscore as this is
-reserved(and not visually pleasing IMO)
+reserved. The other option is a trailing underscore which is fairly common but
+I think makes the code less readable.
+
+Use a prefix to indicate to indicate whether the variable is an instance
+variable or a class static variable.
 
 Member variables are prefixed by `m_`, so for instance `name` would become
 `m_name`.
 
 Static member variables are prefixed by `s_`.
+
+Member names should be similar as the accessor function names associated with
+the variable.
+
+For data members that are non-POD types it will usually make sense to encode
+the type in the name. When it is appropriate postfix the variable type in the
+name.
+
+For instance if I have a std::map that contains some data protected by a
+std::mutex then the map name might be `m_thread_name_map` and the mutex
+variable name might be `m_thread_name_map_mutex`.
 
 ## Control Structures
 
@@ -123,22 +158,3 @@ see the [Mozilla Code Style Guide](http://developer.mozilla.org/en-US/docs/Mozil
 see the [Mozilla Code Style Guide](http://developer.mozilla.org/en-US/docs/Mozilla/Developer_guide/Coding_Style)
 prefer use of static for now for compatability with debuggers
 
-## Smart Pointers
-
-pass `shared_ptr` by const reference to avoid copying and better performance.
-
-http://herbsutter.com/2013/06/05/gotw-91-solution-smart-pointer-parameters/
-
-## Return Values
-
-If a function needs to indicate whether or not the call succeeded use a bool
-with true to indicate success and false failure.
-
-If a function needs to return an error code or some sort then define an enum
-and use it. Don't use integers as return values and in C++ code never use
-integers and 0 to indicate success. Returning 0 on success is common C
-convention and works fine in C code but when mixed with C++ it is confusing.
-
-## Use of goto
-
-There should not be a need to use goto at all in C++ code.
